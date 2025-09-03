@@ -167,6 +167,7 @@
             <Form>ModelPedido</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
+        <DCCReference Include="Venda\controller\WKVenda.Controller.Pedido.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
