@@ -21,6 +21,7 @@ type
     FCliente: TCliente;
 
     constructor Create(AValue: TComponent); reintroduce;
+    destructor Destroy; override;
     procedure ClearObject;
   public
     class function New: TModelCliente;
@@ -41,7 +42,6 @@ type
     class function getSQL: String;
 
     function DataSource(AValue: TDataSource): TModelCliente;
-
     function Listar(const AFiltro : String) : TModelCliente;
   end;
 
@@ -97,6 +97,12 @@ function TModelCliente.DataSource(AValue: TDataSource): TModelCliente;
 begin
   Result := Self;
   AValue.DataSet := cdsClientes;
+end;
+
+destructor TModelCliente.Destroy;
+begin
+  FreeAndNil(FCliente);
+  inherited;
 end;
 
 class function TModelCliente.getSQL: String;

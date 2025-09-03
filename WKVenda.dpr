@@ -16,7 +16,9 @@ uses
   WKVenda.entity.Produto in 'Venda\entities\WKVenda.entity.Produto.pas',
   WKVenda.Model.Produto in 'Venda\model\WKVenda.Model.Produto.pas' {ModelProduto: TDataModule},
   WKVenda.Controller.Produto in 'Venda\controller\WKVenda.Controller.Produto.pas',
-  WKVenda.Utils in 'lib\WKVenda.Utils.pas';
+  WKVenda.Utils in 'lib\WKVenda.Utils.pas',
+  WKVenda.entity.Pedido in 'Venda\entities\WKVenda.entity.Pedido.pas',
+  WKVenda.Model.Pedido in 'Venda\model\WKVenda.Model.Pedido.pas' {ModelPedido: TDataModule};
 
 {$R *.res}
 
@@ -25,6 +27,7 @@ begin
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TfrmPrincipal, frmPrincipal);
   Application.CreateForm(TDMConnection, DMConnection);
+
   Try
     Application.CreateForm(TDMConnection, DMConnection);
   except on E:Exception do
