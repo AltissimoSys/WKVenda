@@ -8,11 +8,10 @@ type
   TProdutoController = class
   private
     FModel : TModelProduto;
-
     constructor create;
-    destructor Destroy; override;
 
   public
+    destructor Destroy; override;
     class function New : TProdutoController;
 
     function setObject(const AId : Integer) : TProdutoController;
@@ -101,6 +100,7 @@ end;
 
 function TProdutoController.setObject(const AId: Integer): TProdutoController;
 begin
+  Result := Self;
   FModel.setObject(AId);
 end;
 

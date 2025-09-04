@@ -3,6 +3,7 @@ program WKVenda;
 uses
   Midas,
   Vcl.Forms,
+  UITypes,
   UPrincipal in 'UPrincipal.pas' {frmPrincipal},
   WKVenda.view.template.selConsulta in 'lib\WKVenda.view.template.selConsulta.pas' {frmTemplateConsulta},
   WKVenda.view.selConsultaCliente in 'Venda\view\WKVenda.view.selConsultaCliente.pas' {frmConsultaCliente},
@@ -19,7 +20,10 @@ uses
   WKVenda.Utils in 'lib\WKVenda.Utils.pas',
   WKVenda.entity.Pedido in 'Venda\entities\WKVenda.entity.Pedido.pas' {/WKVenda.Model.Pedido in 'Venda\model\WKVenda.Model.Pedido.pas' {ModelPedido: TDataModule},
   WKVenda.Model.Pedido in 'Venda\model\WKVenda.Model.Pedido.pas' {ModelPedido: TDataModule},
-  WKVenda.Controller.Pedido in 'Venda\controller\WKVenda.Controller.Pedido.pas';
+  WKVenda.Controller.Pedido in 'Venda\controller\WKVenda.Controller.Pedido.pas',
+  WKVenda.entity.PedidoItem in 'Venda\entities\WKVenda.entity.PedidoItem.pas',
+  WKVenda.entity.PedidoItemLista in 'Venda\entities\WKVenda.entity.PedidoItemLista.pas',
+  WKVenda.Model.Controller.PedidoItemLista in 'Venda\model\WKVenda.Model.Controller.PedidoItemLista.pas';
 
 {$R *.res}
 

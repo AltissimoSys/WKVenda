@@ -20,13 +20,11 @@ type
 
   private
     FProduto: TProduto;
-
     constructor Create(AValue: TComponent); reintroduce;
-    destructor Destroy; override;
-
     procedure ClearObject;
 
   public
+    destructor Destroy; override;
     class function New : TModelProduto;
 
     function setObject(const AId: Integer): TModelProduto; overload;
@@ -167,7 +165,7 @@ end;
 
 function TModelProduto.PrecoVenda: Double;
 begin
-
+  Result := FProduto.PrecoVenda;
 end;
 
 function TModelProduto.setObject(const AId: Integer): TModelProduto;
@@ -175,6 +173,8 @@ begin
   var
     qry: TFDQuery;
   Try
+    Result := Self;
+
     qry.Connection := DMConnection.FDCon;
     qry.SQL.Text := getSQL;
     qry.SQL.Add(Format('AND Id = %d', [AId]));

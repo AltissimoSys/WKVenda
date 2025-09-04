@@ -13,13 +13,14 @@ uses
 
 type
   TfrmConsultaCliente = class(TfrmTemplateConsulta)
+  protected
+    procedure Buscar; override;
     procedure FormCreate(Sender: TObject);
     procedure TimerCharBuscaTimer(Sender: TObject);
     procedure edtGridBuscaChange(Sender: TObject);
   private
     FController : TClienteController;
     procedure criarController;
-    procedure Buscar; override;
   public
 
   end;

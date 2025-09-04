@@ -6,11 +6,17 @@ uses
   System.SysUtils, System.Classes, WKVenda.entity.Pedido, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, Data.DB, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client, WKVenda.Utils, UDMConnection;
+  FireDAC.Comp.Client, WKVenda.Utils, UDMConnection,
+  WKVenda.Model.Controller.PedidoItemLista;
 
 type
+  fnAfterScrollPed = procedure(AIdPedido : Integer) of object;
+
   TModelPedido = class(TDataModule)
     cdsPedidos: TFDMemTable;
+    cdsPedidosItem: TFDMemTable;
+    procedure pCdsPedidosAfterScroll(DataSet: TDataSet);
+    procedure pCDSPedidosAfterPost(DataSet: TDataSet);
   strict private
     procedure setObject(AFields: TFields); overload;
     procedure criarCDS;
@@ -18,9 +24,9 @@ type
     FPedido : TPedido;
 
     constructor Create(AValue: TComponent); reintroduce;
-    destructor Destroy; override;
     procedure ClearObject;
   public
+    destructor Destroy; override;
     class function New: TModelPedido;
     function setObject(const AId: Integer) : TModelPedido; overload;
 
@@ -39,7 +45,9 @@ type
     class function getSQL: String;
 
     function DataSource(AValue: TDataSource): TModelPedido;
-    function Listar(const AFiltro : String) : TModelPedido;
+
+    function Listar(const AFiltro : String) : TModelPedido; overload;
+    function Listar(const AIdCliente : Integer) : TModelPedido; overload;
 
   end;
 
@@ -53,6 +61,16 @@ implementation
 {$R *.dfm}
 
 { TModelPedido }
+
+procedure TModelPedido.pCdsPedidosAfterScroll(DataSet: TDataSet);
+begin
+  cdsPedidosItem := TModelPedidoItemLista.getAll(cdsPedidos.FieldByName('Id').AsInteger);
+end;
+
+procedure TModelPedido.pCDSPedidosAfterPost(DataSet: TDataSet);
+begin
+  cdsPedidosItem := TModelPedidoItemLista.getAll(cdsPedidos.FieldByName('Id').AsInteger);
+end;
 
 procedure TModelPedido.ClearObject;
 begin
@@ -80,6 +98,8 @@ begin
   str.AppendLine('AND 1=0');
 
   WKVenda.Utils.CriarCDS(cdsPedidos, str.ToString);
+  cdsPedidos.AfterScroll := pCdsPedidosAfterScroll;
+  cdsPedidos.AfterPost   := pCDSPedidosAfterPost;
 end;
 
 function TModelPedido.DataEmissao(AValue: TDateTime): TModelPedido;
@@ -90,7 +110,7 @@ end;
 
 function TModelPedido.DataEmissao: TDateTime;
 begin
-
+  Result := FPedido.DataEmissao;
 end;
 
 function TModelPedido.DataSource(AValue: TDataSource): TModelPedido;
@@ -136,6 +156,14 @@ begin
   FPedido.IdCliente := AValue;
 end;
 
+function TModelPedido.Listar(const AIdCliente: Integer): TModelPedido;
+const
+  WHERE_CLI = 'AND IdCliente = %d';
+begin
+  Result := Self;
+  Listar(Format(WHERE_CLI, [AIdCliente.ToString]));
+end;
+
 function TModelPedido.IdCliente: Integer;
 begin
   Result := IdCliente;
@@ -173,6 +201,7 @@ begin
   FPedido.DataEmissao := AFields.FieldByName('DataEmissao').AsDateTime;
   FPedido.IdCliente   := AFields.FieldByName('IdCliente').AsInteger;
   FPedido.ValorTotal  := AFields.FieldByName('ValorTotal').AsFloat;
+  FPedido.Itens := TModelPedidoItemLista.getLis(FPedido.Id);
 end;
 
 function TModelPedido.setObject(const AId: Integer): TModelPedido;
@@ -180,6 +209,8 @@ begin
   var
     qry: TFDQuery;
   Try
+    Result := Self;
+
     qry.Connection := DMConnection.FDCon;
     qry.SQL.Text := getSQL;
     qry.SQL.Add(Format('AND Id = %d', [AId]));

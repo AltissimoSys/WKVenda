@@ -168,6 +168,9 @@
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="Venda\controller\WKVenda.Controller.Pedido.pas"/>
+        <DCCReference Include="Venda\entities\WKVenda.entity.PedidoItem.pas"/>
+        <DCCReference Include="Venda\entities\WKVenda.entity.PedidoItemLista.pas"/>
+        <DCCReference Include="Venda\model\WKVenda.Model.Controller.PedidoItemLista.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

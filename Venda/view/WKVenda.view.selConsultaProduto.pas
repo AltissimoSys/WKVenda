@@ -15,13 +15,14 @@ uses
 type
   TfrmConsultaProduto = class(TfrmTemplateConsulta)
     FDQuery1: TFDQuery;
+  protected
+    procedure Buscar; override;
 	procedure edtGridBuscaChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure TimerCharBuscaTimer(Sender: TObject);
   private
     FController : TProdutoController;
     procedure criarController;
-    procedure Buscar; override;
   public
 
   end;

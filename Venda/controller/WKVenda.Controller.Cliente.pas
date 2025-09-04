@@ -10,8 +10,8 @@ type
   private
     FModel : TModelCliente;
     constructor Create;
-    destructor Destroy; override;
   public
+    destructor Destroy; override;
     class function New : TClienteController;
 
     function setObject(const AId : Integer) : TClienteController;

@@ -12,43 +12,23 @@ inherited frmConsultaCliente: TfrmConsultaCliente
             Expanded = False
             FieldName = 'Id'
             Title.Caption = 'C'#243'digo'
-            Title.Font.Charset = DEFAULT_CHARSET
-            Title.Font.Color = clWindowText
-            Title.Font.Height = -12
-            Title.Font.Name = 'Segoe UI'
-            Title.Font.Style = []
             Visible = True
           end
           item
             Expanded = False
             FieldName = 'Nome'
-            Title.Font.Charset = DEFAULT_CHARSET
-            Title.Font.Color = clWindowText
-            Title.Font.Height = -12
-            Title.Font.Name = 'Segoe UI'
-            Title.Font.Style = []
             Width = 213
             Visible = True
           end
           item
             Expanded = False
             FieldName = 'Cidade'
-            Title.Font.Charset = DEFAULT_CHARSET
-            Title.Font.Color = clWindowText
-            Title.Font.Height = -12
-            Title.Font.Name = 'Segoe UI'
-            Title.Font.Style = []
             Width = 233
             Visible = True
           end
           item
             Expanded = False
             FieldName = 'UF'
-            Title.Font.Charset = DEFAULT_CHARSET
-            Title.Font.Color = clWindowText
-            Title.Font.Height = -12
-            Title.Font.Name = 'Segoe UI'
-            Title.Font.Style = []
             Width = 25
             Visible = True
           end>

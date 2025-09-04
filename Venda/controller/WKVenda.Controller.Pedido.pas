@@ -10,8 +10,8 @@ type
   private
     FModel : TModelPedido;
     constructor create;
-    destructor Destroy; override;
   public
+    destructor Destroy; override;
     class function New : TPedidoController;
     function setObject(const AId : Integer) : TPedidoController;
 

@@ -19,11 +19,10 @@ type
 
   private
     FCliente: TCliente;
-
     constructor Create(AValue: TComponent); reintroduce;
-    destructor Destroy; override;
     procedure ClearObject;
   public
+    destructor Destroy; override;
     class function New: TModelCliente;
     function setObject(const AId: Integer): TModelCliente; overload;
 
@@ -180,6 +179,8 @@ begin
   var
     qry: TFDQuery;
   Try
+    Result := Self;
+
     qry.Connection := DMConnection.FDCon;
     qry.SQL.Text := getSQL;
     qry.SQL.Add(Format('AND Id = %d', [AId]));
