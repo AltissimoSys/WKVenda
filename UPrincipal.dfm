@@ -10,6 +10,7 @@ object frmPrincipal: TfrmPrincipal
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  FormStyle = fsMDIForm
   Padding.Left = 5
   Padding.Top = 5
   Padding.Right = 5
@@ -25,17 +26,6 @@ object frmPrincipal: TfrmPrincipal
     Align = alTop
     Shape = bsSpacer
   end
-  object pnlPrincipal: TPanel
-    Left = 5
-    Top = 81
-    Width = 614
-    Height = 360
-    Align = alClient
-    Color = clWhite
-    ParentBackground = False
-    TabOrder = 0
-    ExplicitHeight = 355
-  end
   object pnlButtonMenu: TPanel
     Left = 5
     Top = 5
@@ -48,7 +38,7 @@ object frmPrincipal: TfrmPrincipal
     Padding.Right = 2
     Padding.Bottom = 3
     ParentBackground = False
-    TabOrder = 1
+    TabOrder = 0
     object Bevel1: TBevel
       Left = 108
       Top = 4
@@ -365,11 +355,22 @@ object frmPrincipal: TfrmPrincipal
           0000000000000000000000000000000000000000000000000000000000000000
           0000000000000000000000000000000000000000000000000000000000000000
           000000000000}
+        OnClick = btnVendaClick
         ExplicitLeft = 1
         ExplicitTop = -3
         ExplicitHeight = 46
       end
     end
+  end
+  object StatusBar1: TStatusBar
+    Left = 5
+    Top = 422
+    Width = 614
+    Height = 19
+    Panels = <>
+    ExplicitLeft = 0
+    ExplicitTop = 96
+    ExplicitWidth = 0
   end
   object MainMenu: TMainMenu
     Left = 536

@@ -23,7 +23,8 @@ uses
   WKVenda.Controller.Pedido in 'Venda\controller\WKVenda.Controller.Pedido.pas',
   WKVenda.entity.PedidoItem in 'Venda\entities\WKVenda.entity.PedidoItem.pas',
   WKVenda.entity.PedidoItemLista in 'Venda\entities\WKVenda.entity.PedidoItemLista.pas',
-  WKVenda.Model.Controller.PedidoItemLista in 'Venda\model\WKVenda.Model.Controller.PedidoItemLista.pas';
+  WKVenda.Model.Controller.PedidoItemLista in 'Venda\model\WKVenda.Model.Controller.PedidoItemLista.pas',
+  WKVenda.view.Pedido in 'D:\Profissional\WKTech-Seletivo\WKTech-Projeto\Venda\view\WKVenda.view.Pedido.pas' {frmPedido};
 
 {$R *.res}
 

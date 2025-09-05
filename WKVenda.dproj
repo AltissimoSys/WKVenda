@@ -170,7 +170,14 @@
         <DCCReference Include="Venda\controller\WKVenda.Controller.Pedido.pas"/>
         <DCCReference Include="Venda\entities\WKVenda.entity.PedidoItem.pas"/>
         <DCCReference Include="Venda\entities\WKVenda.entity.PedidoItemLista.pas"/>
-        <DCCReference Include="Venda\model\WKVenda.Model.Controller.PedidoItemLista.pas"/>
+        <DCCReference Include="Venda\model\WKVenda.Model.Controller.PedidoItemLista.pas">
+            <Form>,
+  WKVenda.view.Pedido in &apos;D</Form>
+            <DesignClass>Profissional\WKTech-Seletivo\WKTech-Projeto\Venda\view\WKVenda.view.Pedido.pas&apos; {frmPedido</DesignClass>
+        </DCCReference>
+        <DCCReference Include="D:\Profissional\WKTech-Seletivo\WKTech-Projeto\Venda\view\WKVenda.view.Pedido.pas">
+            <Form>frmPedido</Form>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

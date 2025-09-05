@@ -134,8 +134,14 @@ begin
 
     with strSQL do
     Begin
-      AppendLine('select * from Pedido');
-      AppendLine(' WHERE 1=1');
+      AppendLine('select cli.Nome ClienteNome,');
+      AppendLine('	     cli.Cidade,');
+      AppendLine('       cli.UF,');
+      AppendLine('       ped.*');
+      AppendLine('FROM Pedido ped');
+      AppendLine('INNER JOIN Cliente cli');
+      AppendLine('	ON ped.IdCliente = cli.Id');
+      AppendLine('WHERE 1=1');
     End;
 
     Result := strSQL.toString;

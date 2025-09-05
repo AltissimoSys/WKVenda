@@ -9,11 +9,10 @@ uses
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf,
   FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async,
   FireDAC.Phys, FireDAC.VCLUI.Wait, Data.DB, FireDAC.Comp.Client,
-  FireDAC.Phys.MySQL, FireDAC.Phys.MySQLDef;
+  FireDAC.Phys.MySQL, FireDAC.Phys.MySQLDef, WKVenda.view.Pedido, Vcl.ComCtrls;
 
 type
   TfrmPrincipal = class(TForm)
-    pnlPrincipal: TPanel;
     MainMenu: TMainMenu;
     mmCadastro: TMenuItem;
     mmConsulta: TMenuItem;
@@ -29,12 +28,14 @@ type
     btnVenda: TSpeedButton;
     Bevel2: TBevel;
     Bevel3: TBevel;
+    StatusBar1: TStatusBar;
     procedure btnClienteClick(Sender: TObject);
     procedure btnProdutoClick(Sender: TObject);
+    procedure btnVendaClick(Sender: TObject);
   private
-    { Private declarations }
+
   public
-    { Public declarations }
+
   end;
 
 var
@@ -61,6 +62,20 @@ begin
     frmConsultaProduto.ShowModal;
   Finally
     FreeAndNil(frmConsultaProduto);
+  End;
+end;
+
+procedure TfrmPrincipal.btnVendaClick(Sender: TObject);
+begin
+  Try
+    Screen.Cursor := crHourGlass;
+    if not Assigned(frmPedido) then
+      //Application.CreateForm(TfrmPedido, frmPedido);
+      frmPedido := TfrmPedido.Create(Self);
+
+    frmPedido.Show;
+  Finally
+    Screen.Cursor := crDefault;
   End;
 end;
 

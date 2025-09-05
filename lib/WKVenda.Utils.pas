@@ -122,6 +122,7 @@ Begin
   var qry : TFDQuery;
   Try
     Result := TDataSet.Create(nil);
+    Result.Open;
     fillQuery(qry, ASQL);
 
     criarDataset(qry.Fields);
