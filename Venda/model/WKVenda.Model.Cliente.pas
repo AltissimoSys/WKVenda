@@ -14,6 +14,7 @@ type
     cdsClientes: TFDMemTable;
 
   strict private
+    FIsLoaded : Boolean;
     procedure setObject(AFields: TFields); overload;
     procedure criarCDS;
 
@@ -22,6 +23,7 @@ type
     constructor Create(AValue: TComponent); reintroduce;
     procedure ClearObject;
   public
+
     destructor Destroy; override;
     class function New: TModelCliente;
     function setObject(const AId: Integer): TModelCliente; overload;
@@ -42,6 +44,8 @@ type
 
     function DataSource(AValue: TDataSource): TModelCliente;
     function Listar(const AFiltro : String) : TModelCliente;
+
+    property IsLoaded: Boolean read FIsLoaded write FIsLoaded;
   end;
 
 var
@@ -66,6 +70,7 @@ end;
 
 procedure TModelCliente.ClearObject;
 begin
+  FIsLoaded := False;
   FCliente.Id := 0;
   FCliente.Nome := EmptyStr;
   FCliente.Cidade := EmptyStr;
@@ -89,7 +94,7 @@ begin
   str.Append(getSQL);
   str.AppendLine('AND 1=0');
 
-  WKVenda.Utils.CriarCDS(cdsClientes, str.ToString);
+  cdsClientes := WKVenda.Utils.CriarDataset(str.ToString);
 end;
 
 function TModelCliente.DataSource(AValue: TDataSource): TModelCliente;
@@ -144,7 +149,8 @@ begin
     strSQL.Append(getSQL);
     strSQL.AppendLine(AFiltro);
 
-    fillCDS(cdsClientes, strSQL.ToString);
+    criarCDS;
+    fillDataset(cdsClientes, strSQL.ToString);
   Finally
     FreeAndNil(strSQL);
   End;
@@ -163,10 +169,15 @@ end;
 
 procedure TModelCliente.setObject(AFields: TFields);
 begin
-  FCliente.Id := AFields.FieldByName('Id').AsInteger;
-  FCliente.Nome := AFields.FieldByName('Nome').AsString;
-  FCliente.Cidade := AFields.FieldByName('Cidade').AsString;
-  FCliente.UF := AFields.FieldByName('UF').AsString;
+  Try
+    FCliente.Id := AFields.FieldByName('Id').AsInteger;
+    FCliente.Nome := AFields.FieldByName('Nome').AsString;
+    FCliente.Cidade := AFields.FieldByName('Cidade').AsString;
+    FCliente.UF := AFields.FieldByName('UF').AsString;
+    FIsLoaded := True;
+  Except
+    ClearObject;
+  End;
 end;
 
 function TModelCliente.Nome: String;
@@ -181,12 +192,17 @@ begin
   Try
     Result := Self;
 
+    qry := TFDQuery.Create(nil) ;
     qry.Connection := DMConnection.FDCon;
     qry.SQL.Text := getSQL;
     qry.SQL.Add(Format('AND Id = %d', [AId]));
+    qry.Open;
 
     if not qry.isEmpty then
       setObject(qry.Fields)
+    else
+      FIsLoaded := False;
+
 
   Finally
     FreeAndNil(qry);

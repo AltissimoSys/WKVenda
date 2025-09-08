@@ -70,6 +70,7 @@ const
 
 implementation
 
+
 {$R *.dfm}
 
 procedure TfrmTemplateConsulta.btnConfirmaClick(Sender: TObject);

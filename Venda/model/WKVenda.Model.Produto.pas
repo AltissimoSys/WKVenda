@@ -80,7 +80,7 @@ begin
   str.Append(getSQL);
   str.AppendLine('AND 1=0');
 
-  WKVenda.Utils.CriarCDS(cdsProdutos, str.ToString);
+  cdsProdutos := WKVenda.Utils.CriarDataset(str.ToString);
 end;
 
 function TModelProduto.DataSource(AValue: TDataSource): TModelProduto;
@@ -141,7 +141,8 @@ begin
     strSQL.Append(getSQL);
     strSQL.AppendLine(AFiltro);
 
-    fillCDS(cdsProdutos, strSQL.ToString);
+    criarCDS;
+    fillDataset(cdsProdutos, strSQL.ToString);
   Finally
     FreeAndNil(strSQL);
   End;

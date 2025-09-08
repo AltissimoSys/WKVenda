@@ -160,7 +160,7 @@
         <DCCReference Include="Venda\controller\WKVenda.Controller.Produto.pas"/>
         <DCCReference Include="lib\WKVenda.Utils.pas"/>
         <DCCReference Include="Venda\entities\WKVenda.entity.Pedido.pas">
-            <Form>/WKVenda.Model.Pedido in &apos;Venda\model\WKVenda.Model.Pedido.pas&apos; {ModelPedido</Form>
+            <Form>ModelPedido</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="Venda\model\WKVenda.Model.Pedido.pas">
@@ -171,12 +171,15 @@
         <DCCReference Include="Venda\entities\WKVenda.entity.PedidoItem.pas"/>
         <DCCReference Include="Venda\entities\WKVenda.entity.PedidoItemLista.pas"/>
         <DCCReference Include="Venda\model\WKVenda.Model.Controller.PedidoItemLista.pas">
-            <Form>,
-  WKVenda.view.Pedido in &apos;D</Form>
+            <Form>frmPedido</Form>
             <DesignClass>Profissional\WKTech-Seletivo\WKTech-Projeto\Venda\view\WKVenda.view.Pedido.pas&apos; {frmPedido</DesignClass>
         </DCCReference>
-        <DCCReference Include="D:\Profissional\WKTech-Seletivo\WKTech-Projeto\Venda\view\WKVenda.view.Pedido.pas">
+        <DCCReference Include="Venda\view\WKVenda.view.Pedido.pas">
             <Form>frmPedido</Form>
+        </DCCReference>
+        <DCCReference Include="Venda\view\WKVenda.view.selConsultaPedido.pas">
+            <Form>frmConsultaPedido</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>

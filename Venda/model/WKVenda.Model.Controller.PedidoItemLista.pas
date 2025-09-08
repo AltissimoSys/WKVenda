@@ -8,6 +8,10 @@ uses WKVenda.entity.PedidoItemLista, FireDAC.Comp.Client, WKVenda.Utils,
 type
 
   TModelPedidoItemLista = class
+
+  strict private
+    function criarCDS : TFDMemTable;
+
   private
     class function getSQL : String; overload;
     class function getSQL(const AIdPedido : Integer) : String; overload;
@@ -20,6 +24,19 @@ type
 implementation
 
 { TModelPedidoItemLista }
+
+function TModelPedidoItemLista.criarCDS : TFDMemTable ;
+begin
+
+  var str : TStringBuilder;
+  str := TStringBuilder.Create;
+  str.Clear;
+
+  str.Append(getSQL);
+  str.AppendLine('AND 1=0');
+
+  Result := WKVenda.Utils.CriarDataset(str.ToString);
+end;
 
 class function TModelPedidoItemLista.getAll(AIdPedido: Integer): TFDMemTable;
   procedure Add(AFields : TFields);
@@ -34,19 +51,18 @@ class function TModelPedidoItemLista.getAll(AIdPedido: Integer): TFDMemTable;
   End;
 
 begin
-  var dts : TDataset;
+  var str : TStringBuilder;
   Try
-    Result := TFDMemTable.Create(nil);
-    dts := getDataSet(getSQL(AIdPedido));
-    dts.first;
-    while not dts.eof do
-    Begin
-      Result.Append;
-      Add(dts.Fields);
-      dts.Next;
-    End;
+    str := TStringBuilder.Create;
+    str.Clear;
+
+    str.Append(getSQL);
+    str.AppendLine('AND 1=0');
+
+    Result := WKVenda.Utils.CriarDataset(str.ToString);
+    Result := getDataSet(getSQL(AIdPedido));
   Finally
-    FreeAndNil(dts);
+    FreeAndNil(str);
   End;
 end;
 

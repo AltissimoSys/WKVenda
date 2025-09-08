@@ -13,9 +13,9 @@ uses
 
 type
   TfrmConsultaCliente = class(TfrmTemplateConsulta)
+    procedure FormCreate(Sender: TObject);
   protected
     procedure Buscar; override;
-    procedure FormCreate(Sender: TObject);
     procedure TimerCharBuscaTimer(Sender: TObject);
     procedure edtGridBuscaChange(Sender: TObject);
   private
@@ -55,7 +55,8 @@ end;
 procedure TfrmConsultaCliente.criarController;
 begin
   if not Assigned(FController)then
-    FController := TClienteController.New.DataSource(dsGrid);
+    FController := TClienteController.New
+                      .DataSource(dsGrid);
 end;
 
 procedure TfrmConsultaCliente.edtGridBuscaChange(Sender: TObject);

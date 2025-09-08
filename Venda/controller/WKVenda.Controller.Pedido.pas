@@ -37,7 +37,7 @@ implementation
 
 constructor TPedidoController.create;
 begin
-  FModel := TModelPedido.create(Nil);
+  FModel := TModelPedido.New;
 end;
 
 function TPedidoController.DataEmissao: TDateTime;

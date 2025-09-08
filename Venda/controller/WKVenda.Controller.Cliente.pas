@@ -31,6 +31,8 @@ type
     function DataSource(AValue : TDataSource) : TClienteController;
     function Listar(const AFiltro : String) : TClienteController;
 
+    function IsLoaded : Boolean;
+
   end;
 
 implementation
@@ -69,6 +71,11 @@ function TClienteController.Id(AValue: Integer): TClienteController;
 begin
   Result := Self;
   FModel.Id(AValue);
+end;
+
+function TClienteController.IsLoaded: Boolean;
+begin
+  Result := FModel.IsLoaded;
 end;
 
 function TClienteController.Listar(const AFiltro: String): TClienteController;

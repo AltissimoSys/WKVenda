@@ -97,7 +97,7 @@ begin
   str.Append(getSQL);
   str.AppendLine('AND 1=0');
 
-  WKVenda.Utils.CriarCDS(cdsPedidos, str.ToString);
+  cdsPedidos := WKVenda.Utils.CriarDataset(str.ToString);
   cdsPedidos.AfterScroll := pCdsPedidosAfterScroll;
   cdsPedidos.AfterPost   := pCDSPedidosAfterPost;
 end;
@@ -134,7 +134,7 @@ begin
 
     with strSQL do
     Begin
-      AppendLine('select cli.Nome ClienteNome,');
+      AppendLine('select cli.Nome,');
       AppendLine('	     cli.Cidade,');
       AppendLine('       cli.UF,');
       AppendLine('       ped.*');
@@ -190,7 +190,8 @@ begin
     strSQL.Append(getSQL);
     strSQL.AppendLine(AFiltro);
 
-    fillCDS(cdsPedidos, strSQL.ToString);
+    criarCDS;
+    fillDataset(cdsPedidos, strSQL.ToString);
   Finally
     FreeAndNil(strSQL);
   End;

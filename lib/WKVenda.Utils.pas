@@ -6,20 +6,19 @@ uses DB, DBClient, FireDAC.Comp.DataSet, FireDAC.Comp.Client, UDMConnection,
 SysUtils;
 
 
-procedure CriarCDS(ACDS : TFDMemTable; ASQL : String); overload;
-procedure CriarCDS(ACDS : TFDMemTable; AFields : TFields); overload;
+function CriarDataset(ASQL : String) : TFDMemTable; overload;
 
-procedure fillCDS(var ACDS : TFDMemTable; const ASQL : String);
-procedure fillQuery(AQry : TFDQuery; const ASQL : String);
+procedure fillDataset(var ADataSet : TFDMemTable; const ASQL : String);
+procedure fillQuery(var AQry : TFDQuery; const ASQL : String);
 
-function criarDataset(AFields : TFields) : TDataSet;
-function getDataSet(const ASQL : String) : TDataSet;
+function criarDataset(AFields : TFields) : TFDMemTable; overload;
+function getDataSet(const ASQL : String) : TFDMemTable;
 
 
 implementation
 
 
-procedure CriarCDS(ACDS : TFDMemTable; ASQL : String);
+function CriarDataset(ASQL : String) : TFDMemTable;
 Begin
   var qry : TFDQuery;
   Try
@@ -28,86 +27,77 @@ Begin
     qry.SQL.Text := ASQL;
     qry.Open;
 
-    ACDS.Close;
-    ACDS.FieldDefs.Clear;
+    Result := TFDMemTable.Create(Nil);
+
+    Result.FieldDefs.Clear;
 
     var i : Integer;
     for i := 0 to qry.FieldCount-1 do
     Begin
-      ACDS.FieldDefs.Add(qry.Fields[i].FieldName, qry.Fields[i].DataType, qry.Fields[i].Size);
+      Result.FieldDefs.Add(qry.Fields[i].FieldName, qry.Fields[i].DataType, qry.Fields[i].Size);
     End;
 
-    ACDS.CreateDataSet;
+    Result.CreateDataSet;
   Finally
     FreeAndNil(qry);
   End;
 End;
 
-procedure CriarCDS(ACDS : TFDMemTable; AFields : TFields); overload;
-Begin
-  ACDS.Close;
-  ACDS.FieldDefs.Clear;
-
-  var i : Integer;
-  for i := 0 to AFields.Count -1 do
-  Begin
-    ACDS.FieldDefs.Add(AFields.Fields[i].FieldName, AFields.Fields[i].DataType, AFields.Fields[i].Size);
-  End;
-
-  ACDS.CreateDataSet;
-End;
-
-function criarDataset(AFields : TFields) : TDataSet;
+function criarDataset(AFields : TFields) : TFDMemTable;
 Begin
   Try
-    Result.Close;
+    Result := TFDMemTable.Create(nil);
     var i : Integer;
     for i := 0 to AFields.Count-1 do
     Begin
       Result.FieldDefs.Add(AFields[i].FieldName, AFields[i].DataType, AFields[i].Size);
     End;
-    Result.Open;
+
+    Result.CreateDataSet;
+
+    //Result.Open;
   Finally
   End;
 End;
 
-procedure fillCDS(var ACDS : TFDMemTable; const ASQL : String);
+procedure fillDataset(var ADataSet : TFDMemTable; const ASQL : String);
 Begin
   var qry : TFDQuery;
 
   Try
-    ACDS.DisableControls;
-    ACDS.EmptyDataSet;
-    qry := TFDQuery.Create(nil);
-    qry.Connection := DMConnection.FDCon;
+    ADataSet.DisableControls;
+
+    if(ADataSet.Active)then
+      ADataSet.EmptyDataSet;
+
     fillQuery(qry, ASQL);
-    CriarCDS(ACDS, qry.Fields);
 
     qry.First;
     while not qry.Eof do
     Begin
-      ACDS.Append;
+      ADataSet.Append;
       var i : Integer;
       for i := 0 to qry.FieldCount-1 do
       Begin
-        ACDS.Fields[i].Value := qry.Fields[i].Value;
+        ADataSet.Fields[i].Value := qry.Fields[i].Value;
       End;
-      ACDS.Post;
+      ADataSet.Post;
 
       qry.Next;
     End;
-    ACDS.First;
+    ADataSet.First;
 
   Finally
-    ACDS.EnableControls;
+    ADataSet.EnableControls;
     FreeAndNil(qry);
   End;
 End;
 
-procedure fillQuery(AQry : TFDQuery; const ASQL : String);
+procedure fillQuery(var AQry : TFDQuery; const ASQL : String);
 Begin
   Try
     AQry := TFDQuery.Create(nil);
+    AQry.Connection := DMConnection.FDCon;
     AQry.Close;
     AQry.DisableControls;
     AQry.SQL.Text := ASQL;
@@ -117,15 +107,13 @@ Begin
   End;
 End;
 
-function getDataSet(const ASQL : String) : TDataSet;
+function getDataSet(const ASQL : String) : TFDMemTable;
 Begin
   var qry : TFDQuery;
   Try
-    Result := TDataSet.Create(nil);
-    Result.Open;
     fillQuery(qry, ASQL);
 
-    criarDataset(qry.Fields);
+    Result := criarDataset(qry.Fields);
 
     qry.First;
     while not qry.Eof do
