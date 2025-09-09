@@ -20,8 +20,11 @@ type
   strict private
     procedure setObject(AFields: TFields); overload;
     procedure criarCDS;
+    procedure criarCDSItens;
   private
     FPedido : TPedido;
+    FDataSource : TDataSource;
+    FDataSourceItem : TDataSource;
 
     constructor Create(AValue: TComponent); reintroduce;
     procedure ClearObject;
@@ -44,7 +47,7 @@ type
 
     class function getSQL: String;
 
-    function DataSource(AValue: TDataSource): TModelPedido;
+    function DataSource(AValue: TDataSource; AItem : TDataSource): TModelPedido;
 
     function Listar(const AFiltro : String) : TModelPedido; overload;
     function Listar(const AIdCliente : Integer) : TModelPedido; overload;
@@ -64,12 +67,44 @@ implementation
 
 procedure TModelPedido.pCdsPedidosAfterScroll(DataSet: TDataSet);
 begin
-  cdsPedidosItem := TModelPedidoItemLista.getAll(cdsPedidos.FieldByName('Id').AsInteger);
+  var dts := TModelPedidoItemLista.getAll(cdsPedidos.FieldByName('Id').AsInteger);
+
+  if(cdsPedidosItem.Active)then  
+    cdsPedidosItem.EmptyDataSet;
+  
+  dts.First;
+  while not dts.Eof do
+  Begin
+    cdsPedidosItem.Append;    
+    var i : word;
+    for i := 0 to dts.FieldCount-1 do
+    Begin
+      cdsPedidosItem.FieldByName(dts.Fields[i].FieldName).Value := dts.Fields[i].Value;
+    End;
+    cdsPedidosItem.Post;
+                        
+    dts.Next;
+  End;
 end;
 
 procedure TModelPedido.pCDSPedidosAfterPost(DataSet: TDataSet);
 begin
-  cdsPedidosItem := TModelPedidoItemLista.getAll(cdsPedidos.FieldByName('Id').AsInteger);
+  var dts := TModelPedidoItemLista.getAll(cdsPedidos.FieldByName('Id').AsInteger);
+
+  cdsPedidosItem.EmptyDataSet;
+  dts.First;
+  while not dts.Eof do
+  Begin
+    cdsPedidosItem.Append;    
+    var i : word;
+    for i := 0 to dts.FieldCount-1 do
+    Begin
+      cdsPedidosItem.FieldByName(dts.Fields[i].FieldName).Value := dts.Fields[i].Value;
+    End;
+    cdsPedidosItem.Post;
+                        
+    dts.Next;
+  End;
 end;
 
 procedure TModelPedido.ClearObject;
@@ -91,15 +126,38 @@ end;
 procedure TModelPedido.criarCDS;
 begin
   var str : TStringBuilder;
-  str := TStringBuilder.Create;
-  str.Clear;
+  Try
+    str := TStringBuilder.Create;
+    str.Clear;
 
-  str.Append(getSQL);
-  str.AppendLine('AND 1=0');
+    str.Append(getSQL);
+    str.AppendLine('AND 1=0');
 
-  cdsPedidos := WKVenda.Utils.CriarDataset(str.ToString);
-  cdsPedidos.AfterScroll := pCdsPedidosAfterScroll;
-  cdsPedidos.AfterPost   := pCDSPedidosAfterPost;
+    cdsPedidos := WKVenda.Utils.CriarDataset(str.ToString);
+
+    cdsPedidos.AfterScroll := pCdsPedidosAfterScroll;
+    cdsPedidos.AfterPost   := pCDSPedidosAfterPost;
+
+    criarCDSItens;
+  Finally
+    FreeAndNil(str);
+  End;
+end;
+
+procedure TModelPedido.criarCDSItens;
+begin
+  var str : TStringBuilder;
+  Try
+    str := TStringBuilder.Create;
+    str.Clear;
+
+    str.Append(TModelPedidoItemLista.getSQL);
+    str.AppendLine('AND 1=0');
+
+    cdsPedidosItem := WKVenda.Utils.CriarDataset(str.ToString);
+  Finally
+    FreeAndNil(str);
+  End;
 end;
 
 function TModelPedido.DataEmissao(AValue: TDateTime): TModelPedido;
@@ -113,10 +171,12 @@ begin
   Result := FPedido.DataEmissao;
 end;
 
-function TModelPedido.DataSource(AValue: TDataSource): TModelPedido;
+function TModelPedido.DataSource(AValue: TDataSource; AItem : TDataSource): TModelPedido;
 begin
   Result := Self;
   AValue.DataSet := cdsPedidos;
+  if Assigned(AItem) then
+    AItem.DataSet := cdsPedidosItem;
 end;
 
 destructor TModelPedido.Destroy;
@@ -172,7 +232,7 @@ end;
 
 function TModelPedido.IdCliente: Integer;
 begin
-  Result := IdCliente;
+  Result := FPedido.IdCliente;
 end;
 
 function TModelPedido.Id: Integer;
@@ -190,7 +250,6 @@ begin
     strSQL.Append(getSQL);
     strSQL.AppendLine(AFiltro);
 
-    criarCDS;
     fillDataset(cdsPedidos, strSQL.ToString);
   Finally
     FreeAndNil(strSQL);

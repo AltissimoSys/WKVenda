@@ -45,6 +45,7 @@ type
     edtValorTotal: TDBEdit;
     dsCliente: TDataSource;
     dsPedido: TDataSource;
+    FDQuery1: TFDQuery;
     procedure FormCreate(Sender: TObject);
     procedure edtIdClienteExit(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -69,14 +70,24 @@ implementation
 { TfrmPedido }
 
 procedure TfrmPedido.btnPedidoClick(Sender: TObject);
+const
+  SQL_ = 'AND ped.Id = %s';
+var
+  lcId : String;
+
 begin
   inherited;
   Try
     frmConsultaPedido := TfrmConsultaPedido.create(Self);
-//    frmConsultaPedido.Show;
     if(frmConsultaPedido.ShowModal = mrOk)then
     Begin
-      //
+      lcId := frmConsultaPedido.dsGrid.DataSet.FieldByName('Id').AsString;
+      FPedidoController
+          .DataSource(dsPedido, dsGrid)
+          .Listar(Format(SQL_, [lcId]));
+
+      edtIdCliente.Text := FPedidoController.IdCliente.ToString;
+      edtIdClienteExit(Sender);
     End;
   Finally
     FreeAndNil(frmConsultaPedido);
@@ -92,12 +103,16 @@ end;
 procedure TfrmPedido.criarPedidoController;
 begin
   if not Assigned(FPedidoController) then
-    FPedidoController := TPedidoController.New;
+    FPedidoController := TPedidoController.New.DataSource(dsPedido, dsGrid) ;
 end;
 
 procedure TfrmPedido.edtIdClienteExit(Sender: TObject);
 begin
   inherited;
+
+  if(Trim(edtIdCliente.Text) = EmptyStr)then
+    Exit;
+
   FClienteController
       .setObject(StrToIntDef(edtIdCliente.Text,0))
       .DataSource(dsCliente)
@@ -117,6 +132,7 @@ procedure TfrmPedido.FormCreate(Sender: TObject);
 begin
   inherited;
   criarClienteController;
+  criarPedidoController;
 end;
 
 procedure TfrmPedido.FormShow(Sender: TObject);

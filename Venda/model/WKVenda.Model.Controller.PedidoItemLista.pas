@@ -13,10 +13,11 @@ type
     function criarCDS : TFDMemTable;
 
   private
+
+  public
     class function getSQL : String; overload;
     class function getSQL(const AIdPedido : Integer) : String; overload;
 
-  public
     class function getLis(AIdPedido : Integer) : TListaPedidoItem;
     class function getAll(AIdPedido : Integer) : TFDMemTable;
   end;
@@ -61,6 +62,7 @@ begin
 
     Result := WKVenda.Utils.CriarDataset(str.ToString);
     Result := getDataSet(getSQL(AIdPedido));
+
   Finally
     FreeAndNil(str);
   End;
@@ -107,7 +109,10 @@ begin
 
     with strSQL do
     Begin
-      AppendLine('select * from pedidoitens');
+      AppendLine('select pr.Descricao AS ProdutoNome, pdi.*');
+      AppendLine('FROM pedidoitens pdi');
+      AppendLine('INNER JOIN Produto pr');
+      AppendLine('	ON pdi.IdProduto = pr.Id');
       AppendLine('WHERE 1=1');
     End;
     Result := strSQL.toString;

@@ -27,7 +27,7 @@ type
     function ValorTotal : Double; overload;
     function ValorTotal(AValue : Double) : TPedidoController; overload;
 
-    function DataSource(AValue : TDataSource) : TPedidoController;
+    function DataSource(AValue : TDataSource; AItem : TDataSource) : TPedidoController;
     function Listar(const AFiltro : String) : TPedidoController;
   end;
 
@@ -51,10 +51,10 @@ begin
   FModel.DataEmissao(AValue);
 end;
 
-function TPedidoController.DataSource(AValue: TDataSource): TPedidoController;
+function TPedidoController.DataSource(AValue: TDataSource; AItem : TDataSource): TPedidoController;
 begin
   Result := Self;
-  FModel.DataSource(AValue);
+  FModel.DataSource(AValue, AItem);
 end;
 
 destructor TPedidoController.Destroy;
@@ -88,6 +88,7 @@ end;
 function TPedidoController.Listar(const AFiltro: String): TPedidoController;
 begin
   Result := Self;
+
   FModel.Listar(AFiltro);
 end;
 

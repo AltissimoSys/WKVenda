@@ -7,8 +7,8 @@ inherited frmPedido: TfrmPedido
   Visible = True
   WindowState = wsMaximized
   StyleElements = [seFont, seClient, seBorder]
-  ExplicitWidth = 1129
-  ExplicitHeight = 722
+  ExplicitWidth = 1127
+  ExplicitHeight = 714
   TextHeight = 15
   inherited Bevel3: TBevel
     Width = 1107
@@ -24,32 +24,59 @@ inherited frmPedido: TfrmPedido
     ExplicitHeight = 540
     inherited pnlGrid: TPanel
       Left = 616
-      Width = 490
-      Height = 542
+      Width = 488
+      Height = 534
       StyleElements = [seFont, seClient, seBorder]
       ExplicitLeft = 616
       ExplicitWidth = 488
       ExplicitHeight = 534
       inherited dbgLista: TDBGrid
-        Width = 488
-        Height = 465
+        Width = 486
+        Height = 457
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'IdProduto'
+            Title.Caption = 'C'#243'digo'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ProdutoNome'
+            Title.Caption = 'Produto'
+            Width = 200
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'Quantidade'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ValorUnitario'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'ValorTotal'
+            Visible = True
+          end>
       end
       object pnlBottomGrid: TPanel
         Left = 1
-        Top = 466
-        Width = 488
+        Top = 458
+        Width = 486
         Height = 75
         Align = alBottom
         TabOrder = 1
-        ExplicitTop = 458
-        ExplicitWidth = 486
       end
     end
     object pnlDadosFundo: TPanel
       Left = 3
       Top = 3
       Width = 613
-      Height = 542
+      Height = 534
       Align = alLeft
       BevelOuter = bvNone
       Color = 12645002
@@ -58,27 +85,24 @@ inherited frmPedido: TfrmPedido
       Padding.Bottom = 1
       ParentBackground = False
       TabOrder = 1
-      ExplicitHeight = 534
       object pnlDados: TPanel
         Left = 1
         Top = 1
         Width = 612
-        Height = 540
+        Height = 532
         Align = alClient
         BevelOuter = bvNone
         Color = clWhite
         ParentBackground = False
         TabOrder = 0
-        ExplicitHeight = 532
         object pcCabPedido: TPageControl
           Left = 0
           Top = 137
           Width = 612
-          Height = 403
+          Height = 395
           ActivePage = tbsPedido
           Align = alClient
           TabOrder = 0
-          ExplicitHeight = 395
           object tbsPedido: TTabSheet
             Caption = 'Pedido'
             ImageIndex = 1
@@ -86,7 +110,7 @@ inherited frmPedido: TfrmPedido
               Left = 0
               Top = 0
               Width = 604
-              Height = 373
+              Height = 365
               Align = alClient
               BevelOuter = bvNone
               Color = clWhite
@@ -96,7 +120,6 @@ inherited frmPedido: TfrmPedido
               Padding.Bottom = 2
               ParentBackground = False
               TabOrder = 0
-              ExplicitHeight = 365
               object Label5: TLabel
                 Left = 4
                 Top = 11
@@ -407,7 +430,7 @@ inherited frmPedido: TfrmPedido
       StyleElements = [seFont, seClient, seBorder]
     end
     inherited edtGridBusca: TEdit
-      Width = 1103
+      Width = 1101
       Visible = False
       StyleElements = [seFont, seClient, seBorder]
       ExplicitWidth = 1101
@@ -422,7 +445,7 @@ inherited frmPedido: TfrmPedido
     ExplicitWidth = 1107
     ExplicitHeight = 60
     inherited PnlBtnConfirma: TPanel
-      Left = 997
+      Left = 995
       Height = 52
       StyleElements = [seFont, seClient, seBorder]
       ExplicitLeft = 995
@@ -464,5 +487,16 @@ inherited frmPedido: TfrmPedido
   object dsPedido: TDataSource
     Left = 418
     Top = 440
+  end
+  object FDQuery1: TFDQuery
+    Active = True
+    Connection = DMConnection.FDCon
+    SQL.Strings = (
+      'select pr.Descricao AS ProdutoNome, pdi.* from pedidoitens pdi'
+      'INNER JOIN Produto pr '
+      #9'ON pdi.IdProduto = pr.Id'
+      'WHERE pdi.IdPedido = 1')
+    Left = 922
+    Top = 196
   end
 end
