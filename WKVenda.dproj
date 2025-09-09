@@ -181,6 +181,11 @@
             <Form>frmConsultaPedido</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="Venda\model\WKVenda.Model.PedidoItem.pas">
+            <Form>ModelPedidoItem</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -1,7 +1,7 @@
-object ModelPedido: TModelPedido
-  Height = 389
-  Width = 504
-  object cdsPedidos: TFDMemTable
+object ModelPedidoItem: TModelPedidoItem
+  Height = 294
+  Width = 517
+  object cdsPedidosItem: TFDMemTable
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
@@ -9,7 +9,7 @@ object ModelPedido: TModelPedido
     UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
     UpdateOptions.CheckRequired = False
     UpdateOptions.AutoCommitUpdates = True
-    Left = 232
-    Top = 176
+    Left = 216
+    Top = 96
   end
 end

@@ -14,9 +14,9 @@ type
 
   TModelPedido = class(TDataModule)
     cdsPedidos: TFDMemTable;
-    cdsPedidosItem: TFDMemTable;
     procedure pCdsPedidosAfterScroll(DataSet: TDataSet);
     procedure pCDSPedidosAfterPost(DataSet: TDataSet);
+    procedure pCdsPedidosItemAfterPost(DataSet: TDataSet);
   strict private
     procedure setObject(AFields: TFields); overload;
     procedure criarCDS;
@@ -25,7 +25,6 @@ type
     FPedido : TPedido;
     FDataSource : TDataSource;
     FDataSourceItem : TDataSource;
-
     constructor Create(AValue: TComponent); reintroduce;
     procedure ClearObject;
   public
@@ -69,42 +68,54 @@ procedure TModelPedido.pCdsPedidosAfterScroll(DataSet: TDataSet);
 begin
   var dts := TModelPedidoItemLista.getAll(cdsPedidos.FieldByName('Id').AsInteger);
 
-  if(cdsPedidosItem.Active)then  
+  {if(cdsPedidosItem.Active)then
     cdsPedidosItem.EmptyDataSet;
-  
+
   dts.First;
   while not dts.Eof do
   Begin
-    cdsPedidosItem.Append;    
+    cdsPedidosItem.Append;
     var i : word;
     for i := 0 to dts.FieldCount-1 do
     Begin
       cdsPedidosItem.FieldByName(dts.Fields[i].FieldName).Value := dts.Fields[i].Value;
     End;
     cdsPedidosItem.Post;
-                        
+
     dts.Next;
   End;
+  }
 end;
 
 procedure TModelPedido.pCDSPedidosAfterPost(DataSet: TDataSet);
 begin
   var dts := TModelPedidoItemLista.getAll(cdsPedidos.FieldByName('Id').AsInteger);
 
+  {
   cdsPedidosItem.EmptyDataSet;
   dts.First;
   while not dts.Eof do
   Begin
-    cdsPedidosItem.Append;    
+    cdsPedidosItem.Append;
     var i : word;
     for i := 0 to dts.FieldCount-1 do
     Begin
       cdsPedidosItem.FieldByName(dts.Fields[i].FieldName).Value := dts.Fields[i].Value;
     End;
     cdsPedidosItem.Post;
-                        
+
     dts.Next;
   End;
+  }
+
+  TFloatField(DataSet.FieldByName('ValorTotal')).DisplayFormat := '####,##0.00';
+end;
+
+procedure TModelPedido.pCdsPedidosItemAfterPost(DataSet: TDataSet);
+begin
+  TFloatField(DataSet.FieldByName('Quantidade')).DisplayFormat    := '####,##0.00';
+  TFloatField(DataSet.FieldByName('ValorUnitario')).DisplayFormat := '####,##0.00';
+  TFloatField(DataSet.FieldByName('ValorTotal')).DisplayFormat    := '####,##0.00';
 end;
 
 procedure TModelPedido.ClearObject;
@@ -154,7 +165,10 @@ begin
     str.Append(TModelPedidoItemLista.getSQL);
     str.AppendLine('AND 1=0');
 
+    {
     cdsPedidosItem := WKVenda.Utils.CriarDataset(str.ToString);
+    cdsPedidosItem.AfterPost := pCdsPedidosItemAfterPost;
+    }
   Finally
     FreeAndNil(str);
   End;
@@ -175,8 +189,9 @@ function TModelPedido.DataSource(AValue: TDataSource; AItem : TDataSource): TMod
 begin
   Result := Self;
   AValue.DataSet := cdsPedidos;
-  if Assigned(AItem) then
-    AItem.DataSet := cdsPedidosItem;
+
+  {if Assigned(AItem) then
+    AItem.DataSet := cdsPedidosItem; }
 end;
 
 destructor TModelPedido.Destroy;
@@ -277,9 +292,11 @@ begin
   Try
     Result := Self;
 
+    qry := TFDQuery.Create(nil);
     qry.Connection := DMConnection.FDCon;
     qry.SQL.Text := getSQL;
-    qry.SQL.Add(Format('AND Id = %d', [AId]));
+    qry.SQL.Add(Format('AND ped.Id = %d', [AId]));
+    qry.Open;
 
     if not qry.isEmpty then
       setObject(qry.Fields)
@@ -299,5 +316,7 @@ function TModelPedido.ValorTotal: Double;
 begin
   Result := FPedido.ValorTotal;
 end;
+
+{ TControllerPedidoItem }
 
 end.

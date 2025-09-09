@@ -119,7 +119,9 @@ begin
     FColFieldSel := Column.Field.FieldName;
     lblBusca.Caption := Column.Title.Caption;
     lblBusca.Caption := format(LABEL_BUSCA, [Column.Title.Caption]);
-    edtGridBusca.SetFocus;
+
+    if(edtGridBusca.CanFocus)then
+      edtGridBusca.SetFocus;
   end;
 
 end;

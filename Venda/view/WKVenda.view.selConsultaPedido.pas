@@ -18,6 +18,7 @@ type
     procedure dbgListaTitleClick(Column: TColumn);
     procedure dbgListaDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure dbgListaDblClick(Sender: TObject);
 
   protected
     procedure Buscar; override;
@@ -84,6 +85,12 @@ begin
   if not Assigned(FController) then
     FController := TPedidoController.New
                       .DataSource(dsGrid, Nil);
+end;
+
+procedure TfrmConsultaPedido.dbgListaDblClick(Sender: TObject);
+begin
+  inherited;
+  btnConfirma.Click;
 end;
 
 procedure TfrmConsultaPedido.dbgListaDrawColumnCell(Sender: TObject;

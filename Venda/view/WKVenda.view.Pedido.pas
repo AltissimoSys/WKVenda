@@ -46,10 +46,29 @@ type
     dsCliente: TDataSource;
     dsPedido: TDataSource;
     FDQuery1: TFDQuery;
+    pnlBtnIncItem: TPanel;
+    btnIncItem: TSpeedButton;
+    pnlTopItem: TPanel;
+    Bevel1: TBevel;
+    DBEdit4: TDBEdit;
+    Label11: TLabel;
+    Label12: TLabel;
+    DBEdit5: TDBEdit;
+    Panel5: TPanel;
+    Edit1: TEdit;
+    Panel6: TPanel;
+    btnSelProduto: TSpeedButton;
+    edtDescricaoProd: TDBEdit;
+    DBEdit2: TDBEdit;
+    Label10: TLabel;
+    pnlBtnCancelarEditItem: TPanel;
+    btnCancelarEditItem: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure edtIdClienteExit(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnPedidoClick(Sender: TObject);
+    procedure btnSelProdutoClick(Sender: TObject);
+    procedure btnIncItemClick(Sender: TObject);
   private
     FClienteController : TClienteController;
     FPedidoController  : TPedidoController;
@@ -69,11 +88,17 @@ implementation
 
 { TfrmPedido }
 
+procedure TfrmPedido.btnIncItemClick(Sender: TObject);
+begin
+  inherited;
+  pnlTopItem.Enabled := True;
+end;
+
 procedure TfrmPedido.btnPedidoClick(Sender: TObject);
 const
   SQL_ = 'AND ped.Id = %s';
 var
-  lcId : String;
+  lcId : Integer;
 
 begin
   inherited;
@@ -81,10 +106,10 @@ begin
     frmConsultaPedido := TfrmConsultaPedido.create(Self);
     if(frmConsultaPedido.ShowModal = mrOk)then
     Begin
-      lcId := frmConsultaPedido.dsGrid.DataSet.FieldByName('Id').AsString;
+      lcId := frmConsultaPedido.dsGrid.DataSet.FieldByName('Id').AsInteger;
       FPedidoController
-          .DataSource(dsPedido, dsGrid)
-          .Listar(Format(SQL_, [lcId]));
+          .DataSource(dsPedido, dsGrid).setObject(lcId)
+          .Listar(Format(SQL_, [lcId.ToString]));
 
       edtIdCliente.Text := FPedidoController.IdCliente.ToString;
       edtIdClienteExit(Sender);
@@ -92,6 +117,12 @@ begin
   Finally
     FreeAndNil(frmConsultaPedido);
   End;
+end;
+
+procedure TfrmPedido.btnSelProdutoClick(Sender: TObject);
+begin
+  inherited;
+  //
 end;
 
 procedure TfrmPedido.criarClienteController;
@@ -118,14 +149,16 @@ begin
       .DataSource(dsCliente)
       .Listar(Format('AND Id = %d',[ StrToIntDef(edtIdCliente.Text, 0)]));
 
-  pnlBtnPedido.Visible := (not FClienteController.IsLoaded);
-
   if not FClienteController.IsLoaded then
   Begin
     MessageDlg('Cliente não encontrado!', mtWarning, [mbOk], 0);
     edtIdCliente.Text := EmptyStr;
     edtIdCliente.SetFocus;
+    Exit;
   End;
+
+  pnlBtnPedido.Visible := True;
+  btnIncItem.Enabled := True;
 end;
 
 procedure TfrmPedido.FormCreate(Sender: TObject);

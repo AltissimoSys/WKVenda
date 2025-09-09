@@ -1,75 +1,305 @@
 inherited frmPedido: TfrmPedido
   Caption = 'Lan'#231'amento pedidos'
   ClientHeight = 675
-  ClientWidth = 1111
+  ClientWidth = 1336
   FormStyle = fsMDIChild
   Position = poDefault
   Visible = True
   WindowState = wsMaximized
   StyleElements = [seFont, seClient, seBorder]
-  ExplicitWidth = 1127
+  ExplicitWidth = 1352
   ExplicitHeight = 714
   TextHeight = 15
   inherited Bevel3: TBevel
-    Width = 1107
+    Width = 1332
     Shape = bsSpacer
     Style = bsRaised
     ExplicitWidth = 1109
   end
   inherited pnlPrincipal: TPanel
-    Width = 1107
+    Width = 1332
     Height = 540
     StyleElements = [seFont, seClient, seBorder]
-    ExplicitWidth = 1107
+    ExplicitWidth = 1332
     ExplicitHeight = 540
     inherited pnlGrid: TPanel
       Left = 616
-      Width = 488
+      Width = 713
       Height = 534
       StyleElements = [seFont, seClient, seBorder]
       ExplicitLeft = 616
-      ExplicitWidth = 488
+      ExplicitWidth = 713
       ExplicitHeight = 534
+      object Bevel1: TBevel [0]
+        Left = 1
+        Top = 138
+        Width = 711
+        Height = 5
+        Align = alTop
+        Shape = bsSpacer
+        Style = bsRaised
+        ExplicitTop = 42
+        ExplicitWidth = 615
+      end
       inherited dbgLista: TDBGrid
-        Width = 486
-        Height = 457
+        Top = 143
+        Width = 711
+        Height = 337
+        Font.Height = -19
+        ParentFont = False
+        TitleFont.Height = -19
         Columns = <
           item
             Expanded = False
             FieldName = 'IdProduto'
-            Title.Caption = 'C'#243'digo'
+            Title.Caption = 'C'#243'digo Prod.'
+            Width = 120
             Visible = True
           end
           item
             Expanded = False
             FieldName = 'ProdutoNome'
             Title.Caption = 'Produto'
-            Width = 200
+            Width = 300
             Visible = True
           end
           item
             Expanded = False
             FieldName = 'Quantidade'
+            Title.Caption = 'Qtde.'
             Visible = True
           end
           item
             Expanded = False
             FieldName = 'ValorUnitario'
+            Title.Caption = 'Vlr. Unit'#225'rio'
             Visible = True
           end
           item
             Expanded = False
             FieldName = 'ValorTotal'
+            Title.Caption = 'Vlr. Total'
             Visible = True
           end>
       end
       object pnlBottomGrid: TPanel
         Left = 1
-        Top = 458
-        Width = 486
-        Height = 75
+        Top = 480
+        Width = 711
+        Height = 53
         Align = alBottom
         TabOrder = 1
+        object pnlBtnIncItem: TPanel
+          Left = 1
+          Top = 1
+          Width = 104
+          Height = 51
+          Align = alLeft
+          BevelOuter = bvNone
+          Color = 14865050
+          ParentBackground = False
+          TabOrder = 0
+          object btnIncItem: TSpeedButton
+            Left = 0
+            Top = 0
+            Width = 104
+            Height = 51
+            Cursor = crHandPoint
+            Align = alClient
+            Caption = '&Incluir'
+            Enabled = False
+            Flat = True
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            ParentFont = False
+            OnClick = btnIncItemClick
+            ExplicitLeft = -4
+            ExplicitTop = 4
+            ExplicitHeight = 73
+          end
+        end
+        object pnlBtnCancelarEditItem: TPanel
+          Left = 105
+          Top = 1
+          Width = 105
+          Height = 51
+          Align = alLeft
+          BevelOuter = bvNone
+          Color = 11120122
+          ParentBackground = False
+          TabOrder = 1
+          ExplicitLeft = 3
+          ExplicitTop = 4
+          ExplicitHeight = 52
+          object btnCancelarEditItem: TSpeedButton
+            Left = 0
+            Top = 0
+            Width = 105
+            Height = 51
+            Cursor = crHandPoint
+            Align = alClient
+            Caption = '&Cancelar'
+            Enabled = False
+            Flat = True
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            ParentFont = False
+            OnClick = SpeedButton1Click
+            ExplicitLeft = 1
+            ExplicitTop = -3
+            ExplicitHeight = 52
+          end
+        end
+      end
+      object pnlTopItem: TPanel
+        Left = 1
+        Top = 1
+        Width = 711
+        Height = 137
+        Align = alTop
+        BevelOuter = bvNone
+        Color = clWhite
+        Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -19
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        Padding.Left = 2
+        Padding.Top = 2
+        Padding.Right = 2
+        Padding.Bottom = 2
+        ParentBackground = False
+        ParentFont = False
+        TabOrder = 2
+        object Label11: TLabel
+          Left = 15
+          Top = 65
+          Width = 99
+          Height = 25
+          Caption = 'Vr. Unit'#225'rio:'
+        end
+        object Label12: TLabel
+          Left = 142
+          Top = 65
+          Width = 71
+          Height = 25
+          Caption = 'Vr. Total:'
+        end
+        object Label10: TLabel
+          Left = 504
+          Top = 1
+          Width = 49
+          Height = 25
+          Caption = 'Qtde.:'
+        end
+        object DBEdit4: TDBEdit
+          Left = 15
+          Top = 96
+          Width = 121
+          Height = 33
+          DataField = 'ValorUnitario'
+          DataSource = dsGrid
+          TabOrder = 0
+        end
+        object DBEdit5: TDBEdit
+          Left = 142
+          Top = 96
+          Width = 121
+          Height = 33
+          DataField = 'ValorTotal'
+          DataSource = dsGrid
+          TabOrder = 1
+        end
+        object Panel5: TPanel
+          Left = 16
+          Top = 23
+          Width = 481
+          Height = 35
+          BevelOuter = bvNone
+          Color = 12645002
+          Padding.Left = 1
+          Padding.Top = 1
+          Padding.Right = 1
+          Padding.Bottom = 1
+          ParentBackground = False
+          TabOrder = 2
+          object Edit1: TEdit
+            Left = 1
+            Top = 1
+            Width = 70
+            Height = 33
+            Align = alLeft
+            BorderStyle = bsNone
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -19
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            ParentFont = False
+            TabOrder = 0
+            OnExit = edtIdClienteExit
+          end
+          object Panel6: TPanel
+            Left = 71
+            Top = 1
+            Width = 43
+            Height = 33
+            Align = alLeft
+            BevelOuter = bvNone
+            Color = 14865050
+            ParentBackground = False
+            TabOrder = 1
+            object btnSelProduto: TSpeedButton
+              Left = 0
+              Top = 0
+              Width = 43
+              Height = 33
+              Cursor = crHandPoint
+              Align = alClient
+              Caption = '...'
+              ImageIndex = 0
+              Flat = True
+              OnClick = btnSelProdutoClick
+              ExplicitLeft = 3
+            end
+          end
+          object edtDescricaoProd: TDBEdit
+            Left = 114
+            Top = 1
+            Width = 366
+            Height = 33
+            Align = alClient
+            BevelInner = bvNone
+            BevelOuter = bvNone
+            BorderStyle = bsNone
+            DataField = 'ProdutoNome'
+            DataSource = dsGrid
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -19
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            ParentFont = False
+            ReadOnly = True
+            TabOrder = 2
+          end
+        end
+        object DBEdit2: TDBEdit
+          Left = 504
+          Top = 24
+          Width = 73
+          Height = 33
+          DataField = 'Quantidade'
+          DataSource = dsGrid
+          TabOrder = 3
+        end
       end
     end
     object pnlDadosFundo: TPanel
@@ -418,9 +648,9 @@ inherited frmPedido: TfrmPedido
     end
   end
   inherited pnlTop: TPanel
-    Width = 1107
+    Width = 1332
     StyleElements = [seFont, seClient, seBorder]
-    ExplicitWidth = 1107
+    ExplicitWidth = 1332
     inherited lblBusca: TLabel
       Visible = False
       StyleElements = [seFont, seClient, seBorder]
@@ -430,25 +660,25 @@ inherited frmPedido: TfrmPedido
       StyleElements = [seFont, seClient, seBorder]
     end
     inherited edtGridBusca: TEdit
-      Width = 1101
+      Width = 1326
       Visible = False
       StyleElements = [seFont, seClient, seBorder]
-      ExplicitWidth = 1101
+      ExplicitWidth = 1326
     end
   end
   inherited pnlBottom: TPanel
     Top = 613
-    Width = 1107
+    Width = 1332
     Height = 60
     StyleElements = [seFont, seClient, seBorder]
     ExplicitTop = 613
-    ExplicitWidth = 1107
+    ExplicitWidth = 1332
     ExplicitHeight = 60
     inherited PnlBtnConfirma: TPanel
-      Left = 995
+      Left = 1220
       Height = 52
       StyleElements = [seFont, seClient, seBorder]
-      ExplicitLeft = 995
+      ExplicitLeft = 1220
       ExplicitHeight = 52
       inherited btnConfirma: TSpeedButton
         Height = 52
@@ -473,6 +703,7 @@ inherited frmPedido: TfrmPedido
     end
   end
   inherited dsGrid: TDataSource
+    DataSet = FDQuery1
     Left = 901
     Top = 102
   end

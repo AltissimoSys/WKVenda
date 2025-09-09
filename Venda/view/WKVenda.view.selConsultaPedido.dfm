@@ -25,6 +25,7 @@ inherited frmConsultaPedido: TfrmConsultaPedido
       inherited dbgLista: TDBGrid
         Width = 903
         Height = 465
+        OnDblClick = dbgListaDblClick
         Columns = <
           item
             Expanded = False
