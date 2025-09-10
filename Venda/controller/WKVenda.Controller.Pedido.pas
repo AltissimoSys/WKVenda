@@ -2,7 +2,7 @@ unit WKVenda.Controller.Pedido;
 
 interface
 
-uses WKVenda.Model.Pedido, sysUtils, DB;
+uses WKVenda.Model.Pedido, sysUtils, DB, WKVenda.Controller.PedidoItem;
 
 type
 
@@ -26,6 +26,8 @@ type
 
     function ValorTotal : Double; overload;
     function ValorTotal(AValue : Double) : TPedidoController; overload;
+
+    function PedidoItemController : TPedidoItemController;
 
     function DataSource(AValue : TDataSource; AItem : TDataSource) : TPedidoController;
     function Listar(const AFiltro : String) : TPedidoController;
@@ -95,6 +97,11 @@ end;
 class function TPedidoController.New: TPedidoController;
 begin
   Result := Self.Create;
+end;
+
+function TPedidoController.PedidoItemController: TPedidoItemController;
+begin
+  Result := FModel.PedidoItemController;
 end;
 
 function TPedidoController.setObject(const AId: Integer): TPedidoController;

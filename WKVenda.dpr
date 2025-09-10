@@ -25,7 +25,8 @@ uses
   WKVenda.Model.Controller.PedidoItemLista in 'Venda\model\WKVenda.Model.Controller.PedidoItemLista.pas' {frmPedido: Profissional\WKTech-Seletivo\WKTech-Projeto\Venda\view\WKVenda.view.Pedido.pas' {frmPedido},
   WKVenda.view.Pedido in 'Venda\view\WKVenda.view.Pedido.pas' {frmPedido},
   WKVenda.view.selConsultaPedido in 'Venda\view\WKVenda.view.selConsultaPedido.pas' {frmConsultaPedido},
-  WKVenda.Model.PedidoItem in 'Venda\model\WKVenda.Model.PedidoItem.pas' {ModelPedidoItem: TDataModule};
+  WKVenda.Model.PedidoItem in 'Venda\model\WKVenda.Model.PedidoItem.pas' {ModelPedidoItem: TDataModule},
+  WKVenda.Controller.PedidoItem in 'Venda\controller\WKVenda.Controller.PedidoItem.pas';
 
 {$R *.res}
 

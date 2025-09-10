@@ -27,6 +27,8 @@ type
     class function new(const APedido : Integer) : TModelPedidoItem;
     class function getSQL: String;
 
+    function setObject(const AId : Integer) : TModelPedidoItem; overload;
+
     function Id : Integer; overload;
     function Id(AValue : Integer) : TModelPedidoItem; overload;
 
@@ -193,6 +195,30 @@ function TModelPedidoItem.Quantidade(AValue: Integer): TModelPedidoItem;
 begin
   Result := Self;
   FPedidoItem.Quantidade := AValue;
+end;
+
+function TModelPedidoItem.setObject(const AId: Integer): TModelPedidoItem;
+const
+  SQL_ = 'AND Id = %d';
+
+begin
+  var qry: TFDQuery;
+  var str : TStringBuilder;
+  Try
+    Result := Self;
+
+    str := TStringBuilder.Create;
+    str.Append(getSQL);
+    str.AppendLine(Format(SQL_, []));
+
+    fillQuery(qry, str.ToString);
+
+    if not qry.IsEmpty then
+      setObject(qry.Fields)
+  Finally
+    FreeAndNil(str);
+    FreeAndNil(qry);
+  End;
 end;
 
 function TModelPedidoItem.Quantidade: Double;

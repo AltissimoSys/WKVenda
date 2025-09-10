@@ -7,7 +7,7 @@ uses
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, Data.DB, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, WKVenda.Utils, UDMConnection,
-  WKVenda.Model.Controller.PedidoItemLista;
+  WKVenda.Model.Controller.PedidoItemLista, WKVenda.Controller.PedidoItem;
 
 type
   fnAfterScrollPed = procedure(AIdPedido : Integer) of object;
@@ -18,6 +18,8 @@ type
     procedure pCDSPedidosAfterPost(DataSet: TDataSet);
     procedure pCdsPedidosItemAfterPost(DataSet: TDataSet);
   strict private
+    FPedidoItemController : TPedidoItemController;
+
     procedure setObject(AFields: TFields); overload;
     procedure criarCDS;
     procedure criarCDSItens;
@@ -43,6 +45,8 @@ type
 
     function ValorTotal : Double; overload;
     function ValorTotal(AValue : Double) : TModelPedido; overload;
+
+    function PedidoItemController : TPedidoItemController;
 
     class function getSQL: String;
 
@@ -118,6 +122,11 @@ begin
   TFloatField(DataSet.FieldByName('ValorTotal')).DisplayFormat    := '####,##0.00';
 end;
 
+function TModelPedido.PedidoItemController: TPedidoItemController;
+begin
+  Result := FPedidoItemController;
+end;
+
 procedure TModelPedido.ClearObject;
 begin
   FPedido.Id          := 0;
@@ -129,6 +138,7 @@ end;
 constructor TModelPedido.Create(AValue: TComponent);
 begin
   inherited Create(AValue);
+  FPedidoItemController := TPedidoItemController.create;
   FPedido := TPedido.Create;
   ClearObject;
   criarCDS;
@@ -196,6 +206,7 @@ end;
 
 destructor TModelPedido.Destroy;
 begin
+  FreeAndNil(FPedidoItemController);
   FreeAndNil(FPedido);
   inherited;
 end;
