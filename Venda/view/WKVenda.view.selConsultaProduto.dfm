@@ -52,15 +52,4 @@ inherited frmConsultaProduto: TfrmConsultaProduto
       StyleElements = [seFont, seClient, seBorder]
     end
   end
-  inherited dsGrid: TDataSource
-    DataSet = FDQuery1
-  end
-  object FDQuery1: TFDQuery
-    Active = True
-    Connection = DMConnection.FDCon
-    SQL.Strings = (
-      'select * from Produto')
-    Left = 197
-    Top = 212
-  end
 end

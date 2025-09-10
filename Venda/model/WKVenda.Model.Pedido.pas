@@ -113,6 +113,8 @@ begin
   }
 
   {TFloatField(DataSet.FieldByName('ValorTotal')).DisplayFormat := '####,##0.00'; }
+
+  FPedidoItemController.Listar(DataSet.FieldByName('Id').AsInteger);
 end;
 
 procedure TModelPedido.pCdsPedidosItemAfterPost(DataSet: TDataSet);
@@ -138,7 +140,7 @@ end;
 constructor TModelPedido.Create(AValue: TComponent);
 begin
   inherited Create(AValue);
-  FPedidoItemController := TPedidoItemController.create;
+  FPedidoItemController := TPedidoItemController.new(0);
   FPedido := TPedido.Create;
   ClearObject;
   criarCDS;

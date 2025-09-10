@@ -25,6 +25,8 @@ type
     function PrecoVenda : Double; overload;
     function PrecoVenda(AValue : Double) : TProdutoController; overload;
 
+    function IsLoaded : Boolean;
+
     function DataSource(AValue : TDataSource) : TProdutoController;
     function Listar(const AFiltro : String) : TProdutoController;
 
@@ -69,6 +71,11 @@ function TProdutoController.Id(AValue: Integer): TProdutoController;
 begin
   Result := Self;
   FModel.Id(AValue);
+end;
+
+function TProdutoController.IsLoaded: Boolean;
+begin
+  Result := FModel.IsLoaded;
 end;
 
 function TProdutoController.Listar(const AFiltro: String): TProdutoController;

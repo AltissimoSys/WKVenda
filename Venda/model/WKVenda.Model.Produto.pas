@@ -15,6 +15,7 @@ type
     cdsProdutos: TFDMemTable;
 
   strict private
+    FIsLoaded : Boolean;
     procedure setObject(AFields: TFields); overload;
     procedure criarCDS;
 
@@ -41,8 +42,9 @@ type
     class function getSQL: String;
 
     function DataSource(AValue: TDataSource): TModelProduto;
-
     function Listar(const AFiltro : String) : TModelProduto;
+
+    function IsLoaded : Boolean;
 
   end;
 
@@ -61,6 +63,7 @@ begin
   FProduto.Id := 0;
   FProduto.Descricao := EmptyStr;
   FProduto.PrecoVenda := 0;
+  FIsLoaded := False;
 end;
 
 constructor TModelProduto.Create(AValue: TComponent);
@@ -131,6 +134,11 @@ begin
   FProduto.Id := AValue;
 end;
 
+function TModelProduto.IsLoaded: Boolean;
+begin
+  Result := FIsLoaded;
+end;
+
 function TModelProduto.Listar(const AFiltro: String): TModelProduto;
 begin
   Result := Self;
@@ -141,7 +149,6 @@ begin
     strSQL.Append(getSQL);
     strSQL.AppendLine(AFiltro);
 
-    criarCDS;
     fillDataset(cdsProdutos, strSQL.ToString);
   Finally
     FreeAndNil(strSQL);
@@ -171,19 +178,23 @@ end;
 
 function TModelProduto.setObject(const AId: Integer): TModelProduto;
 begin
-  var
-    qry: TFDQuery;
+  var qry: TFDQuery;
+  var str : TStringBuilder;
+
   Try
     Result := Self;
 
-    qry.Connection := DMConnection.FDCon;
-    qry.SQL.Text := getSQL;
-    qry.SQL.Add(Format('AND Id = %d', [AId]));
+    str := TStringBuilder.Create;
+    str.Append(getSQL);
+    str.AppendLine(Format('AND Id = %d', [AId]));
+
+    fillQuery(qry, str.ToString);
 
     if not qry.isEmpty then
       setObject(qry.Fields)
 
   Finally
+    FreeAndNil(str);
     FreeAndNil(qry);
   End;
 
@@ -194,6 +205,7 @@ begin
   FProduto.Id := AFields.FieldByName('Id').AsInteger;
   FProduto.Descricao := AFields.FieldByName('Descricao').AsString;
   FProduto.PrecoVenda := AFields.FieldByName('PrecoVenda').AsFloat;
+  FIsLoaded := True;
 end;
 
 end.

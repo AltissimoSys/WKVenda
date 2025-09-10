@@ -7,7 +7,6 @@ inherited frmPedido: TfrmPedido
   Visible = True
   WindowState = wsMaximized
   StyleElements = [seFont, seClient, seBorder]
-  ExplicitLeft = -27
   ExplicitWidth = 1352
   ExplicitHeight = 714
   TextHeight = 15
@@ -74,12 +73,14 @@ inherited frmPedido: TfrmPedido
             Expanded = False
             FieldName = 'ValorUnitario'
             Title.Caption = 'Vlr. Unit'#225'rio'
+            Width = 110
             Visible = True
           end
           item
             Expanded = False
             FieldName = 'ValorTotal'
             Title.Caption = 'Vlr. Total'
+            Width = 90
             Visible = True
           end>
       end
@@ -146,7 +147,7 @@ inherited frmPedido: TfrmPedido
             Font.Name = 'Segoe UI'
             Font.Style = []
             ParentFont = False
-            OnClick = SpeedButton1Click
+            OnClick = btnCancelarEditItemClick
             ExplicitLeft = 1
             ExplicitTop = -3
             ExplicitHeight = 52
@@ -176,14 +177,14 @@ inherited frmPedido: TfrmPedido
         TabOrder = 2
         object Label11: TLabel
           Left = 15
-          Top = 65
+          Top = 72
           Width = 99
           Height = 25
           Caption = 'Vr. Unit'#225'rio:'
         end
         object Label12: TLabel
           Left = 142
-          Top = 65
+          Top = 72
           Width = 71
           Height = 25
           Caption = 'Vr. Total:'
@@ -195,23 +196,12 @@ inherited frmPedido: TfrmPedido
           Height = 25
           Caption = 'Qtde.:'
         end
-        object DBEdit4: TDBEdit
-          Left = 15
-          Top = 96
-          Width = 121
-          Height = 33
-          DataField = 'ValorUnitario'
-          DataSource = dsGrid
-          TabOrder = 0
-        end
-        object DBEdit5: TDBEdit
-          Left = 142
-          Top = 96
-          Width = 121
-          Height = 33
-          DataField = 'ValorTotal'
-          DataSource = dsGrid
-          TabOrder = 1
+        object Label8: TLabel
+          Left = 24
+          Top = 0
+          Width = 72
+          Height = 25
+          Caption = 'Produto:'
         end
         object Panel5: TPanel
           Left = 16
@@ -225,8 +215,8 @@ inherited frmPedido: TfrmPedido
           Padding.Right = 1
           Padding.Bottom = 1
           ParentBackground = False
-          TabOrder = 2
-          object Edit1: TEdit
+          TabOrder = 0
+          object edtIdProduto: TEdit
             Left = 1
             Top = 1
             Width = 70
@@ -240,7 +230,7 @@ inherited frmPedido: TfrmPedido
             Font.Style = []
             ParentFont = False
             TabOrder = 0
-            OnExit = edtIdClienteExit
+            OnExit = edtIdProdutoExit
           end
           object Panel6: TPanel
             Left = 71
@@ -266,34 +256,38 @@ inherited frmPedido: TfrmPedido
               ExplicitLeft = 3
             end
           end
-          object edtDescricaoProd: TDBEdit
+          object edtDescricaoProd: TEdit
             Left = 114
             Top = 1
             Width = 366
             Height = 33
             Align = alClient
             BevelInner = bvNone
-            BevelOuter = bvNone
-            BorderStyle = bsNone
-            DataField = 'ProdutoNome'
-            DataSource = dsGrid
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -19
-            Font.Name = 'Segoe UI'
-            Font.Style = []
-            ParentFont = False
-            ReadOnly = True
             TabOrder = 2
+            ExplicitLeft = 168
+            ExplicitTop = 8
+            ExplicitWidth = 121
           end
         end
-        object DBEdit2: TDBEdit
-          Left = 504
+        object edtQuantidade: TEdit
+          Left = 503
           Top = 24
-          Width = 73
+          Width = 82
           Height = 33
-          DataField = 'Quantidade'
-          DataSource = dsGrid
+          TabOrder = 1
+        end
+        object edtValorUnitario: TEdit
+          Left = 15
+          Top = 96
+          Width = 121
+          Height = 33
+          TabOrder = 2
+        end
+        object edtValorTotalItem: TEdit
+          Left = 142
+          Top = 96
+          Width = 121
+          Height = 33
           TabOrder = 3
         end
       end
@@ -574,6 +568,7 @@ inherited frmPedido: TfrmPedido
               Font.Style = []
               ParentFont = False
               TabOrder = 0
+              OnChange = edtIdClienteChange
               OnExit = edtIdClienteExit
             end
             object pnlBtnSelCliente: TPanel
@@ -700,13 +695,12 @@ inherited frmPedido: TfrmPedido
     end
   end
   inherited dsGrid: TDataSource
-    DataSet = FDQuery1
     Left = 901
     Top = 102
   end
   inherited TimerCharBusca: TTimer
-    Left = 809
-    Top = 122
+    Left = 1017
+    Top = 154
   end
   object dsCliente: TDataSource
     Left = 306
@@ -715,16 +709,5 @@ inherited frmPedido: TfrmPedido
   object dsPedido: TDataSource
     Left = 418
     Top = 440
-  end
-  object FDQuery1: TFDQuery
-    Active = True
-    Connection = DMConnection.FDCon
-    SQL.Strings = (
-      'select pr.Descricao AS ProdutoNome, pdi.* from pedidoitens pdi'
-      'INNER JOIN Produto pr '
-      #9'ON pdi.IdProduto = pr.Id'
-      'WHERE pdi.IdPedido = 1')
-    Left = 922
-    Top = 196
   end
 end

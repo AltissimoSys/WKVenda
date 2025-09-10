@@ -149,7 +149,6 @@ begin
     strSQL.Append(getSQL);
     strSQL.AppendLine(AFiltro);
 
-    criarCDS;
     fillDataset(cdsClientes, strSQL.ToString);
   Finally
     FreeAndNil(strSQL);
