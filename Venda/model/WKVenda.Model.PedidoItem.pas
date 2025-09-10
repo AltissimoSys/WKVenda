@@ -22,8 +22,8 @@ type
     FDataSource : TDataSource;
 
     constructor create(AOwner : TComponent; const APedido : Integer); reintroduce;
-    destructor destroy; override;
   public
+    destructor Destroy; override;
     class function new(const APedido : Integer) : TModelPedidoItem;
     class function getSQL: String;
 
@@ -39,7 +39,7 @@ type
     function IdProduto(AValue : Integer) : TModelPedidoItem; overload;
 
     function Quantidade : Double; overload;
-    function Quantidade(AValue : Integer) : TModelPedidoItem; overload;
+    function Quantidade(AValue : Double) : TModelPedidoItem; overload;
 
     function ValorUnitario : Double; overload;
     function ValorUnitario(AValue : Double) : TModelPedidoItem; overload;
@@ -191,7 +191,7 @@ begin
   Result := Self.create(Nil, APedido);
 end;
 
-function TModelPedidoItem.Quantidade(AValue: Integer): TModelPedidoItem;
+function TModelPedidoItem.Quantidade(AValue: Double): TModelPedidoItem;
 begin
   Result := Self;
   FPedidoItem.Quantidade := AValue;

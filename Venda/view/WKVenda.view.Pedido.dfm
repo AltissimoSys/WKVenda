@@ -7,6 +7,7 @@ inherited frmPedido: TfrmPedido
   Visible = True
   WindowState = wsMaximized
   StyleElements = [seFont, seClient, seBorder]
+  ExplicitLeft = -27
   ExplicitWidth = 1352
   ExplicitHeight = 714
   TextHeight = 15
@@ -116,9 +117,7 @@ inherited frmPedido: TfrmPedido
             Font.Style = []
             ParentFont = False
             OnClick = btnIncItemClick
-            ExplicitLeft = -4
-            ExplicitTop = 4
-            ExplicitHeight = 73
+            ExplicitTop = -1
           end
         end
         object pnlBtnCancelarEditItem: TPanel
@@ -131,9 +130,6 @@ inherited frmPedido: TfrmPedido
           Color = 11120122
           ParentBackground = False
           TabOrder = 1
-          ExplicitLeft = 3
-          ExplicitTop = 4
-          ExplicitHeight = 52
           object btnCancelarEditItem: TSpeedButton
             Left = 0
             Top = 0
@@ -484,9 +480,9 @@ inherited frmPedido: TfrmPedido
               end
               object pnlBtnPedido: TPanel
                 Left = 472
-                Top = 11
+                Top = 24
                 Width = 117
-                Height = 64
+                Height = 52
                 BevelOuter = bvNone
                 Color = 10085288
                 ParentBackground = False
@@ -495,7 +491,7 @@ inherited frmPedido: TfrmPedido
                   Left = 0
                   Top = 0
                   Width = 117
-                  Height = 64
+                  Height = 52
                   Cursor = crHandPoint
                   Align = alClient
                   Anchors = [akTop, akRight, akBottom]
@@ -509,6 +505,7 @@ inherited frmPedido: TfrmPedido
                   ParentFont = False
                   OnClick = btnPedidoClick
                   ExplicitLeft = 5
+                  ExplicitHeight = 64
                 end
               end
             end

@@ -11,7 +11,7 @@ uses
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
   UDMConnection, WKVenda.Controller.Cliente, WKVenda.Controller.Pedido,
-  WKVenda.view.selConsultaPedido;
+  WKVenda.view.selConsultaPedido, UITypes;
 
 type
   TfrmPedido = class(TfrmTemplateConsulta)

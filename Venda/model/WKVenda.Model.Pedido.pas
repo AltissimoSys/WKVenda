@@ -70,9 +70,9 @@ implementation
 
 procedure TModelPedido.pCdsPedidosAfterScroll(DataSet: TDataSet);
 begin
-  var dts := TModelPedidoItemLista.getAll(cdsPedidos.FieldByName('Id').AsInteger);
+  {var dts := TModelPedidoItemLista.getAll(cdsPedidos.FieldByName('Id').AsInteger);
 
-  {if(cdsPedidosItem.Active)then
+  if(cdsPedidosItem.Active)then
     cdsPedidosItem.EmptyDataSet;
 
   dts.First;
@@ -93,9 +93,9 @@ end;
 
 procedure TModelPedido.pCDSPedidosAfterPost(DataSet: TDataSet);
 begin
-  var dts := TModelPedidoItemLista.getAll(cdsPedidos.FieldByName('Id').AsInteger);
+  {var dts := TModelPedidoItemLista.getAll(cdsPedidos.FieldByName('Id').AsInteger);
 
-  {
+
   cdsPedidosItem.EmptyDataSet;
   dts.First;
   while not dts.Eof do
@@ -112,7 +112,7 @@ begin
   End;
   }
 
-  TFloatField(DataSet.FieldByName('ValorTotal')).DisplayFormat := '####,##0.00';
+  {TFloatField(DataSet.FieldByName('ValorTotal')).DisplayFormat := '####,##0.00'; }
 end;
 
 procedure TModelPedido.pCdsPedidosItemAfterPost(DataSet: TDataSet);
