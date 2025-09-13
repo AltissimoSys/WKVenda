@@ -22,7 +22,7 @@ type
     pcCabPedido: TPageControl;
     tbsPedido: TTabSheet;
     pnlDadosTop: TPanel;
-    Panel2: TPanel;
+    pnlEdtCliente: TPanel;
     edtIdCliente: TEdit;
     Label2: TLabel;
     pnlBtnSelCliente: TPanel;
@@ -64,6 +64,10 @@ type
     edtValorUnitario: TEdit;
     edtValorTotalItem: TEdit;
     Label8: TLabel;
+    pnlBtnIncluiPedido: TPanel;
+    btnIncluiPedido: TSpeedButton;
+    pnlBtnGravarCab: TPanel;
+    btnGravarCab: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure edtIdClienteExit(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -73,6 +77,8 @@ type
     procedure edtIdClienteChange(Sender: TObject);
     procedure btnCancelarEditItemClick(Sender: TObject);
     procedure edtIdProdutoExit(Sender: TObject);
+    procedure btnIncluiPedidoClick(Sender: TObject);
+    procedure btnGravarCabClick(Sender: TObject);
   private
     FClienteController : TClienteController;
     FPedidoController  : TPedidoController;
@@ -101,12 +107,43 @@ begin
   btnCancelarEditItem.Enabled := False;
 end;
 
+procedure TfrmPedido.btnGravarCabClick(Sender: TObject);
+begin
+  inherited;
+
+  if(FClienteController.IsLoaded)then
+  Begin
+    if edtIdCliente.Text = EmptyStr then
+    Begin
+      MessageDlg('Cliente não informado!', mtInformation, [mbOK],0);
+      edtIdCliente.SetFocus;
+      Exit;
+    End;
+
+    FPedidoController
+      .Id(0).DataEmissao(now)
+      .IdCliente(StrToInt(edtIdCliente.Text))
+      .ValorTotal(0)
+      .RecordObject;
+
+    btnIncluiPedido.Caption := 'Novo';
+  End;
+end;
+
 procedure TfrmPedido.btnIncItemClick(Sender: TObject);
 begin
   inherited;
   pnlTopItem.Enabled := True;
   btnIncItem.Enabled := False;
   btnCancelarEditItem.Enabled := True;
+end;
+
+procedure TfrmPedido.btnIncluiPedidoClick(Sender: TObject);
+begin
+  inherited;
+    btnIncluiPedido.Caption := 'Incluir';
+    pnlEdtCliente.Enabled := True;
+    edtIdCliente.SetFocus;
 end;
 
 procedure TfrmPedido.btnPedidoClick(Sender: TObject);
@@ -173,14 +210,14 @@ procedure TfrmPedido.edtIdClienteChange(Sender: TObject);
 begin
   inherited;
   pnlBtnPedido.Visible := Trim(edtIdCliente.Text) = EmptyStr;
+
+  if(Trim(edtIdCliente.Text) = EmptyStr)then
+    btnIncluiPedido.Enabled := False;
 end;
 
 procedure TfrmPedido.edtIdClienteExit(Sender: TObject);
 begin
   inherited;
-
-  if(Trim(edtIdCliente.Text) = EmptyStr)then
-    Exit;
 
   FClienteController
       .DataSource(dsCliente)
@@ -197,6 +234,7 @@ begin
     Exit;
   End;
 
+  btnIncluiPedido.Enabled := True;
   pnlBtnPedido.Visible := False;
   btnIncItem.Enabled := True;
 end;

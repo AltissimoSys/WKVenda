@@ -7,7 +7,8 @@ uses
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, Data.DB, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, WKVenda.Utils, UDMConnection,
-  WKVenda.Model.Controller.PedidoItemLista, WKVenda.Controller.PedidoItem;
+  WKVenda.Model.Controller.PedidoItemLista, WKVenda.Controller.PedidoItem,
+  Variants;
 
 type
   fnAfterScrollPed = procedure(AIdPedido : Integer) of object;
@@ -54,6 +55,9 @@ type
 
     function Listar(const AFiltro : String) : TModelPedido; overload;
     function Listar(const AIdCliente : Integer) : TModelPedido; overload;
+
+    class function getSQLInsUpd : String;
+    function RecordObject : TModelPedido;
 
   end;
 
@@ -127,6 +131,30 @@ end;
 function TModelPedido.PedidoItemController: TPedidoItemController;
 begin
   Result := FPedidoItemController;
+end;
+
+function TModelPedido.RecordObject: TModelPedido;
+begin
+  var qry := TFDQuery.Create(Nil);
+  Try
+    qry.SQL.Text := getSQLInsUpd;
+    qry.Connection := DMConnection.FDCon;
+
+    qry.ParamByName('Id').Value := FPedido.Id;
+    qry.ParamByName('DataEmissao').AsDateTime := FPedido.DataEmissao;
+    qry.ParamByName('IdCliente'  ).AsInteger  := FPedido.IdCliente;
+    qry.ParamByName('ValorTotal' ).AsFloat    := FPedido.ValorTotal;
+
+    Try
+      qry.ExecSQL;
+    Except on E:Exception do
+      Begin
+        raise Exception.Create('Erro ao gravar pedido: ' + e.Message);
+      End;
+    End;
+  Finally
+    FreeAndNil(qry);
+  End;
 end;
 
 procedure TModelPedido.ClearObject;
@@ -238,6 +266,38 @@ begin
   End;
 end;
 
+class function TModelPedido.getSQLInsUpd: String;
+begin
+  var str := TStringBuilder.Create;
+  Try
+    str.Clear;
+    with str do
+    Begin
+      AppendLine('INSERT INTO Pedido');
+      AppendLine('            (');
+      AppendLine('             Id,');
+      AppendLine('             DataEmissao,');
+      AppendLine('             IdCliente,');
+      AppendLine('             ValorTotal');
+      AppendLine('            )');
+      AppendLine('            VALUES');
+      AppendLine('            (');
+      AppendLine('             :Id,');
+      AppendLine('             :DataEmissao,');
+      AppendLine('             :IdCliente,');
+      AppendLine('             :ValorTotal');
+      AppendLine('            )');
+      AppendLine('ON DUPLICATE KEY');
+      AppendLine('UPDATE DataEmissao = :DataEmissao,');
+      AppendLine('       IdCliente = :IdCliente,');
+      AppendLine('       ValorTotal = :ValorTotal');
+    End;
+    Result := str.ToString;
+  Finally
+    FreeAndNil(str);
+  End;
+end;
+
 function TModelPedido.Id(AValue: Integer): TModelPedido;
 begin
   Result := Self;
@@ -329,7 +389,5 @@ function TModelPedido.ValorTotal: Double;
 begin
   Result := FPedido.ValorTotal;
 end;
-
-{ TControllerPedidoItem }
 
 end.

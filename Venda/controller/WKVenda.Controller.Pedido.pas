@@ -31,6 +31,8 @@ type
 
     function DataSource(AValue : TDataSource; AItem : TDataSource) : TPedidoController;
     function Listar(const AFiltro : String) : TPedidoController;
+
+    function RecordObject : TPedidoController;
   end;
 
 implementation
@@ -102,6 +104,12 @@ end;
 function TPedidoController.PedidoItemController: TPedidoItemController;
 begin
   Result := FModel.PedidoItemController;
+end;
+
+function TPedidoController.RecordObject: TPedidoController;
+begin
+  Result := Self;
+  FModel.RecordObject;
 end;
 
 function TPedidoController.setObject(const AId: Integer): TPedidoController;
