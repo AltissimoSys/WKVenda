@@ -365,6 +365,8 @@ begin
   Try
     Result := Self;
 
+    ClearObject;
+
     qry := TFDQuery.Create(nil);
     qry.Connection := DMConnection.FDCon;
     qry.SQL.Text := getSQL;

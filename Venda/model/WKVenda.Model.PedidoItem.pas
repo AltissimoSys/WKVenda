@@ -207,6 +207,8 @@ begin
   Try
     Result := Self;
 
+    ClearObject;
+
     str := TStringBuilder.Create;
     str.Append(getSQL);
     str.AppendLine(Format(SQL_, []));

@@ -64,10 +64,12 @@ type
     edtValorUnitario: TEdit;
     edtValorTotalItem: TEdit;
     Label8: TLabel;
-    pnlBtnIncluiPedido: TPanel;
-    btnIncluiPedido: TSpeedButton;
+    pnlBtnNovoPedido: TPanel;
+    btnNovoPedido: TSpeedButton;
     pnlBtnGravarCab: TPanel;
     btnGravarCab: TSpeedButton;
+    pnlBtnCancelarIncPed: TPanel;
+    btnCancelarIncPed: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure edtIdClienteExit(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -77,8 +79,11 @@ type
     procedure edtIdClienteChange(Sender: TObject);
     procedure btnCancelarEditItemClick(Sender: TObject);
     procedure edtIdProdutoExit(Sender: TObject);
-    procedure btnIncluiPedidoClick(Sender: TObject);
+    procedure btnNovoPedidoClick(Sender: TObject);
     procedure btnGravarCabClick(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btnCancelarIncPedClick(Sender: TObject);
   private
     FClienteController : TClienteController;
     FPedidoController  : TPedidoController;
@@ -86,6 +91,7 @@ type
     procedure criarClienteController;
     procedure criarPedidoController;
     procedure criarProdutoController;
+    procedure configBotoes;
 
   public
 
@@ -107,26 +113,56 @@ begin
   btnCancelarEditItem.Enabled := False;
 end;
 
+procedure TfrmPedido.btnCancelarIncPedClick(Sender: TObject);
+begin
+  inherited;
+  FPedidoController.setObject(0);
+  FPedidoController.Listar('AND 1=0');
+
+  FClienteController.setObject(0);
+  FClienteController.Listar('AND 1=0');
+
+  btnCancelarIncPed.Enabled := False;
+  btnNovoPedido.Enabled := True;
+  btnGravarCab.Enabled := False;
+
+  edtIdCliente.Clear;
+  pnlEdtCliente.Enabled := False;
+end;
+
 procedure TfrmPedido.btnGravarCabClick(Sender: TObject);
+const
+  MSG_CONFIRMA = 'Deseja gerar um novo pedido para o cliente %s? ';
 begin
   inherited;
 
   if(FClienteController.IsLoaded)then
   Begin
-    if edtIdCliente.Text = EmptyStr then
+    if(MessageDlg(Format(MSG_CONFIRMA, [edtNomeCliente.Text]), TMsgDlgType.mtConfirmation, [mbyes, mbNo], 0) = mrYes)then
     Begin
-      MessageDlg('Cliente não informado!', mtInformation, [mbOK],0);
-      edtIdCliente.SetFocus;
-      Exit;
+//      if edtIdCliente.Text = EmptyStr then
+//      Begin
+//        MessageDlg('Cliente não informado!', mtInformation, [mbOK],0);
+//        edtIdCliente.SetFocus;
+//        Exit;
+//      End;
+
+      FPedidoController
+        .Id(0).DataEmissao(now)
+        .IdCliente(StrToInt(edtIdCliente.Text))
+        .ValorTotal(0)
+        .RecordObject;
+
+      btnNovoPedido.Enabled := True;
+      btnGravarCab.Enabled := False;
+      btnCancelarIncPed.Enabled := False;
     End;
-
-    FPedidoController
-      .Id(0).DataEmissao(now)
-      .IdCliente(StrToInt(edtIdCliente.Text))
-      .ValorTotal(0)
-      .RecordObject;
-
-    btnIncluiPedido.Caption := 'Novo';
+  End
+  Else
+  Begin
+    MessageDlg('Nenhum cliente informado', mtInformation, [mbOk],0);
+    if(edtIdCliente.CanFocus)then
+      edtIdCliente.SetFocus;
   End;
 end;
 
@@ -138,12 +174,14 @@ begin
   btnCancelarEditItem.Enabled := True;
 end;
 
-procedure TfrmPedido.btnIncluiPedidoClick(Sender: TObject);
+procedure TfrmPedido.btnNovoPedidoClick(Sender: TObject);
 begin
   inherited;
-    btnIncluiPedido.Caption := 'Incluir';
-    pnlEdtCliente.Enabled := True;
-    edtIdCliente.SetFocus;
+  pnlEdtCliente.Enabled := True;
+  edtIdCliente.SetFocus;
+  btnNovoPedido.Enabled := False;
+  btnGravarCab.Enabled := True;
+  btnCancelarIncPed.Enabled := True;
 end;
 
 procedure TfrmPedido.btnPedidoClick(Sender: TObject);
@@ -188,6 +226,32 @@ begin
   End;
 end;
 
+procedure TfrmPedido.configBotoes;
+//var
+//  i, j, teste: Integer;
+begin
+
+//  for i := 0 to Self.ComponentCount-1 do
+//  Begin
+//
+//    if(Self.Components[i] is TPanel)then
+//    Begin
+//      teste :=  (Self.Components[i] as TPanel).ControlCount;
+//      for j := 0 to (Self.Components[i] as TPanel).ControlCount-1 do
+//      Begin
+//        if( (Self.Components[i] as TPanel).Controls[j]  is TSpeedButton) then
+//        Begin
+//           ((Self.Components[i] as TPanel).Controls[j]  as TSpeedButton).Cursor := crHandPoint;
+//        End;
+//
+//      End;
+//
+//    End;
+//
+//  End;
+
+end;
+
 procedure TfrmPedido.criarClienteController;
 begin
   if not Assigned(FClienteController) then
@@ -211,8 +275,6 @@ begin
   inherited;
   pnlBtnPedido.Visible := Trim(edtIdCliente.Text) = EmptyStr;
 
-  if(Trim(edtIdCliente.Text) = EmptyStr)then
-    btnIncluiPedido.Enabled := False;
 end;
 
 procedure TfrmPedido.edtIdClienteExit(Sender: TObject);
@@ -228,13 +290,18 @@ begin
 
   if not FClienteController.IsLoaded then
   Begin
-    MessageDlg('Cliente não encontrado!', mtWarning, [mbOk], 0);
+    if(edtIdCliente.Focused)then
+      MessageDlg('Cliente não encontrado!', mtWarning, [mbOk], 0);
+
     edtIdCliente.Text := EmptyStr;
-    edtIdCliente.SetFocus;
+
+    if(edtIdCliente.CanFocus)then
+      edtIdCliente.SetFocus;
+
     Exit;
   End;
 
-  btnIncluiPedido.Enabled := True;
+  btnGravarCab.Enabled := True;
   pnlBtnPedido.Visible := False;
   btnIncItem.Enabled := True;
 end;
@@ -260,6 +327,13 @@ begin
   End;
 end;
 
+procedure TfrmPedido.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  inherited;
+  frmPedido := nil;
+  Action := caFree;
+end;
+
 procedure TfrmPedido.FormCreate(Sender: TObject);
 begin
   inherited;
@@ -273,6 +347,12 @@ begin
   inherited;
   if(edtIdCliente.CanFocus)then
     edtIdCliente.SetFocus;
+end;
+
+procedure TfrmPedido.SpeedButton1Click(Sender: TObject);
+begin
+  inherited;
+  Close;
 end;
 
 end.

@@ -7,6 +7,7 @@ inherited frmPedido: TfrmPedido
   Visible = True
   WindowState = wsMaximized
   StyleElements = [seFont, seClient, seBorder]
+  OnClose = FormClose
   ExplicitWidth = 1352
   ExplicitHeight = 714
   TextHeight = 15
@@ -337,6 +338,7 @@ inherited frmPedido: TfrmPedido
               Padding.Bottom = 2
               ParentBackground = False
               TabOrder = 0
+              ExplicitTop = 2
               object Label5: TLabel
                 Left = 4
                 Top = 11
@@ -351,7 +353,7 @@ inherited frmPedido: TfrmPedido
                 ParentFont = False
               end
               object Label6: TLabel
-                Left = 140
+                Left = 180
                 Top = 11
                 Width = 60
                 Height = 21
@@ -364,7 +366,7 @@ inherited frmPedido: TfrmPedido
                 ParentFont = False
               end
               object Label7: TLabel
-                Left = 325
+                Left = 397
                 Top = 13
                 Width = 75
                 Height = 21
@@ -404,11 +406,12 @@ inherited frmPedido: TfrmPedido
                   Font.Name = 'Segoe UI'
                   Font.Style = []
                   ParentFont = False
+                  ReadOnly = True
                   TabOrder = 0
                 end
               end
               object Panel3: TPanel
-                Left = 324
+                Left = 396
                 Top = 40
                 Width = 127
                 Height = 35
@@ -435,11 +438,12 @@ inherited frmPedido: TfrmPedido
                   Font.Name = 'Segoe UI'
                   Font.Style = []
                   ParentFont = False
+                  ReadOnly = True
                   TabOrder = 0
                 end
               end
               object Panel4: TPanel
-                Left = 140
+                Left = 180
                 Top = 40
                 Width = 173
                 Height = 35
@@ -466,11 +470,12 @@ inherited frmPedido: TfrmPedido
                   Font.Name = 'Segoe UI'
                   Font.Style = []
                   ParentFont = False
+                  ReadOnly = True
                   TabOrder = 0
                 end
               end
               object pnlBtnPedido: TPanel
-                Left = 346
+                Left = 418
                 Top = 96
                 Width = 104
                 Height = 52
@@ -500,30 +505,44 @@ inherited frmPedido: TfrmPedido
                   ExplicitHeight = 64
                 end
               end
-              object pnlBtnIncluiPedido: TPanel
+              object pnlBtnNovoPedido: TPanel
                 Left = 4
                 Top = 95
                 Width = 104
                 Height = 52
                 BevelOuter = bvNone
-                Color = 14865050
+                Color = 385718
                 Font.Charset = DEFAULT_CHARSET
                 Font.Color = clWindowText
                 Font.Height = -16
                 Font.Name = 'Segoe UI'
                 Font.Style = []
+                Padding.Left = 1
+                Padding.Top = 1
+                Padding.Right = 1
+                Padding.Bottom = 1
                 ParentBackground = False
                 ParentFont = False
                 TabOrder = 4
-                object btnIncluiPedido: TSpeedButton
-                  Left = 0
-                  Top = 0
-                  Width = 104
-                  Height = 52
+                object btnNovoPedido: TSpeedButton
+                  Left = 1
+                  Top = 1
+                  Width = 102
+                  Height = 50
                   Align = alClient
                   Caption = 'Novo'
-                  OnClick = btnIncluiPedidoClick
+                  Flat = True
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clWhite
+                  Font.Height = -16
+                  Font.Name = 'Segoe UI'
+                  Font.Style = []
+                  ParentFont = False
+                  OnClick = btnNovoPedidoClick
                   ExplicitLeft = 2
+                  ExplicitTop = 0
+                  ExplicitWidth = 104
+                  ExplicitHeight = 52
                 end
               end
               object pnlBtnGravarCab: TPanel
@@ -547,12 +566,42 @@ inherited frmPedido: TfrmPedido
                   Width = 104
                   Height = 52
                   Align = alClient
-                  Caption = 'Incluir'
+                  Caption = 'Gravar'
+                  Enabled = False
+                  Flat = True
                   OnClick = btnGravarCabClick
-                  ExplicitLeft = 32
-                  ExplicitTop = 16
-                  ExplicitWidth = 23
-                  ExplicitHeight = 22
+                  ExplicitLeft = -2
+                end
+              end
+              object pnlBtnCancelarIncPed: TPanel
+                Left = 226
+                Top = 95
+                Width = 104
+                Height = 52
+                BevelOuter = bvNone
+                Color = 11120122
+                ParentBackground = False
+                TabOrder = 6
+                object btnCancelarIncPed: TSpeedButton
+                  Left = 0
+                  Top = 0
+                  Width = 104
+                  Height = 52
+                  Cursor = crHandPoint
+                  Align = alClient
+                  Caption = '&Cancelar'
+                  Enabled = False
+                  Flat = True
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clWindowText
+                  Font.Height = -16
+                  Font.Name = 'Segoe UI'
+                  Font.Style = []
+                  ParentFont = False
+                  OnClick = btnCancelarIncPedClick
+                  ExplicitLeft = 1
+                  ExplicitTop = -3
+                  ExplicitWidth = 105
                 end
               end
             end
@@ -624,8 +673,6 @@ inherited frmPedido: TfrmPedido
               TabOrder = 0
               OnChange = edtIdClienteChange
               OnExit = edtIdClienteExit
-              ExplicitLeft = -5
-              ExplicitTop = 5
             end
             object pnlBtnSelCliente: TPanel
               Left = 71

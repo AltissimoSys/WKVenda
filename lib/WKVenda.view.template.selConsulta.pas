@@ -53,6 +53,7 @@ type
 
     function fnSQLWhereMontado: String;
     procedure Buscar; virtual; abstract;
+    procedure prepararTela; virtual;
   public
     property SQLBase     : String read FSQLBase write FSQLBase;
     property ColFieldSel : String read FColFieldSel write FColFieldSel;
@@ -191,6 +192,35 @@ procedure TfrmTemplateConsulta.FormShow(Sender: TObject);
 begin
   if(edtGridBusca.CanFocus)then
     edtGridBusca.SetFocus;
+
+  prepararTela;
+end;
+
+procedure TfrmTemplateConsulta.prepararTela;
+  procedure configBotoes;
+  Begin
+    var i, j, teste: Integer;
+
+    for i := 0 to Self.ComponentCount-1 do
+    Begin
+
+      if(Self.Components[i] is TPanel)then
+      Begin
+        teste :=  (Self.Components[i] as TPanel).ControlCount;
+        for j := 0 to (Self.Components[i] as TPanel).ControlCount-1 do
+        Begin
+          if( (Self.Components[i] as TPanel).Controls[j]  is TSpeedButton) then
+          Begin
+             ((Self.Components[i] as TPanel).Controls[j]  as TSpeedButton).Cursor := crHandPoint;
+          End;
+
+        End;
+      End;
+    End;
+  End;
+
+begin
+  configBotoes;
 end;
 
 procedure TfrmTemplateConsulta.SpeedButton1Click(Sender: TObject);

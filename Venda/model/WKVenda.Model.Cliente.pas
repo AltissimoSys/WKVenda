@@ -191,6 +191,8 @@ begin
   Try
     Result := Self;
 
+    ClearObject;
+
     qry := TFDQuery.Create(nil) ;
     qry.Connection := DMConnection.FDCon;
     qry.SQL.Text := getSQL;
@@ -199,9 +201,6 @@ begin
 
     if not qry.isEmpty then
       setObject(qry.Fields)
-    else
-      FIsLoaded := False;
-
 
   Finally
     FreeAndNil(qry);
