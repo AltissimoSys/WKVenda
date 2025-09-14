@@ -91,7 +91,6 @@ type
     procedure criarClienteController;
     procedure criarPedidoController;
     procedure criarProdutoController;
-    procedure configBotoes;
 
   public
 
@@ -172,6 +171,9 @@ begin
   pnlTopItem.Enabled := True;
   btnIncItem.Enabled := False;
   btnCancelarEditItem.Enabled := True;
+
+  edtIdProduto.SetFocus;
+  btnSelProdutoClick(Sender);
 end;
 
 procedure TfrmPedido.btnNovoPedidoClick(Sender: TObject);
@@ -224,32 +226,6 @@ begin
   Finally
     FreeAndNil(frmConsultaProduto);
   End;
-end;
-
-procedure TfrmPedido.configBotoes;
-//var
-//  i, j, teste: Integer;
-begin
-
-//  for i := 0 to Self.ComponentCount-1 do
-//  Begin
-//
-//    if(Self.Components[i] is TPanel)then
-//    Begin
-//      teste :=  (Self.Components[i] as TPanel).ControlCount;
-//      for j := 0 to (Self.Components[i] as TPanel).ControlCount-1 do
-//      Begin
-//        if( (Self.Components[i] as TPanel).Controls[j]  is TSpeedButton) then
-//        Begin
-//           ((Self.Components[i] as TPanel).Controls[j]  as TSpeedButton).Cursor := crHandPoint;
-//        End;
-//
-//      End;
-//
-//    End;
-//
-//  End;
-
 end;
 
 procedure TfrmPedido.criarClienteController;
@@ -313,10 +289,8 @@ begin
     Exit;
 
   FProdutoController
-    .DataSource(dsGrid)
-    .setObject( StrToIntDef(edtIdProduto.Text,0))
-    .Listar( Format('AND Id = %d', [StrToIntDef(edtIdProduto.Text,0)]));
-
+    .setObject(StrToIntDef(edtIdProduto.Text,0))
+    .Listar(Format('AND Id = %d', [StrToIntDef(edtIdProduto.Text,0)]));
 
   if not FProdutoController.IsLoaded then
   Begin
@@ -324,7 +298,14 @@ begin
 
     if(edtIdProduto.CanFocus)then
       edtIdProduto.SetFocus;
+
+    Exit;
   End;
+
+  edtDescricaoProd.Text := FProdutoController.Descricao;
+  edtValorUnitario.Text := FormatFloat('####,##0.00', FProdutoController.PrecoVenda);
+  edtValorTotalItem.Text := FormatFloat('####,##0.00', FProdutoController.PrecoVenda);
+  edtQuantidade.Text := '1';
 end;
 
 procedure TfrmPedido.FormClose(Sender: TObject; var Action: TCloseAction);

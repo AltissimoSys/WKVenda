@@ -798,8 +798,8 @@ inherited frmPedido: TfrmPedido
     end
   end
   inherited dsGrid: TDataSource
-    Left = 901
-    Top = 102
+    Left = 1197
+    Top = 374
   end
   inherited TimerCharBusca: TTimer
     Left = 1017
