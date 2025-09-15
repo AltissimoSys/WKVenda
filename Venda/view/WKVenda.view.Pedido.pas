@@ -12,7 +12,7 @@ uses
   FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
   UDMConnection, WKVenda.Controller.Cliente, WKVenda.Controller.Pedido,
   WKVenda.view.selConsultaPedido, UITypes, WKVenda.view.selConsultaProduto,
-  WKVenda.Controller.Produto;
+  WKVenda.Controller.Produto, WKVenda.Controller.PedidoItem;
 
 type
   TfrmPedido = class(TfrmTemplateConsulta)
@@ -70,6 +70,9 @@ type
     btnGravarCab: TSpeedButton;
     pnlBtnCancelarIncPed: TPanel;
     btnCancelarIncPed: TSpeedButton;
+    Panel2: TPanel;
+    SpeedButton2: TSpeedButton;
+    ImageList1: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure edtIdClienteExit(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -84,13 +87,17 @@ type
     procedure SpeedButton1Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnCancelarIncPedClick(Sender: TObject);
+    procedure SpeedButton2Click(Sender: TObject);
   private
     FClienteController : TClienteController;
     FPedidoController  : TPedidoController;
     FProdutoController : TProdutoController;
+    FPedidoItemController : TPedidoItemController;
+
     procedure criarClienteController;
     procedure criarPedidoController;
     procedure criarProdutoController;
+    procedure criarPedidoItemController;
 
   public
 
@@ -139,13 +146,6 @@ begin
   Begin
     if(MessageDlg(Format(MSG_CONFIRMA, [edtNomeCliente.Text]), TMsgDlgType.mtConfirmation, [mbyes, mbNo], 0) = mrYes)then
     Begin
-//      if edtIdCliente.Text = EmptyStr then
-//      Begin
-//        MessageDlg('Cliente não informado!', mtInformation, [mbOK],0);
-//        edtIdCliente.SetFocus;
-//        Exit;
-//      End;
-
       FPedidoController
         .Id(0).DataEmissao(now)
         .IdCliente(StrToInt(edtIdCliente.Text))
@@ -240,6 +240,12 @@ begin
     FPedidoController := TPedidoController.New.DataSource(dsPedido, dsGrid) ;
 end;
 
+procedure TfrmPedido.criarPedidoItemController;
+begin
+  if not Assigned(FPedidoItemController) then
+    FPedidoItemController := TPedidoItemController.create;
+end;
+
 procedure TfrmPedido.criarProdutoController;
 begin
   if not Assigned(FProdutoController) then
@@ -321,6 +327,7 @@ begin
   criarClienteController;
   criarPedidoController;
   criarProdutoController;
+  criarPedidoItemController;
 end;
 
 procedure TfrmPedido.FormShow(Sender: TObject);
@@ -334,6 +341,18 @@ procedure TfrmPedido.SpeedButton1Click(Sender: TObject);
 begin
   inherited;
   Close;
+end;
+
+procedure TfrmPedido.SpeedButton2Click(Sender: TObject);
+begin
+  inherited;
+
+  //FPedidoItemController.re
+
+  FPedidoItemController
+    .DataSource(dsGrid)
+    .setObject(FPedidoController.Id)
+    .Listar(FPedidoController.Id);
 end;
 
 end.

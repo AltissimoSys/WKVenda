@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-  WKVenda.entity.PedidoItem, WKVenda.Utils;
+  WKVenda.entity.PedidoItem, WKVenda.Utils, UDMConnection;
 
 type
   TModelPedidoItem = class(TDataModule)
@@ -50,6 +50,9 @@ type
     function DataSource(AValue : TDataSource) : TModelPedidoItem;
 
     function Listar(const AIdPedido : Integer) : TModelPedidoItem;
+
+    class function getSQLInsUpd : String;
+    function RecordObject : TModelPedidoItem;
   end;
 
 var
@@ -135,6 +138,42 @@ begin
   End;
 end;
 
+class function TModelPedidoItem.getSQLInsUpd: String;
+begin
+  var str := TStringBuilder.Create;
+  Try
+    str.Clear;
+    with str do
+    Begin
+      AppendLine('INSERT INTO PedidoItens');
+      AppendLine('            (');
+      AppendLine('             Id,');
+      AppendLine('             IdPedido,');
+      AppendLine('             IdProduto,');
+      AppendLine('             Quantidade,');
+      AppendLine('             ValorUnitario,');
+      AppendLine('             ValorTotal');
+      AppendLine('            )');
+      AppendLine('            VALUES');
+      AppendLine('            (');
+      AppendLine('             :Id,');
+      AppendLine('             :IdPedido,');
+      AppendLine('             :IdProduto,');
+      AppendLine('             :Quantidade,');
+      AppendLine('             :ValorUnitario,');
+      AppendLine('             :ValorTotal');
+      AppendLine('            )');
+      AppendLine('ON DUPLICATE KEYUPDATE Quantidade = :Quantidade,');
+      AppendLine('       ValorUnitario = : ValorUnitario,');
+      AppendLine('       ValorTotal = :ValorTotal');
+    End;
+    Result := str.ToString;
+
+  Finally
+    FreeAndNil(str);
+  End;
+end;
+
 function TModelPedidoItem.Id(AValue: Integer): TModelPedidoItem;
 begin
   Result := Self;
@@ -195,6 +234,31 @@ function TModelPedidoItem.Quantidade(AValue: Double): TModelPedidoItem;
 begin
   Result := Self;
   FPedidoItem.Quantidade := AValue;
+end;
+
+function TModelPedidoItem.RecordObject: TModelPedidoItem;
+begin
+  var qry := TFDQuery.Create(Nil);
+  Try
+    qry.SQL.Text := getSQLInsUpd;
+    qry.Connection := DMConnection.FDCon;
+    qry.ParamByName('Id').Value              := FPedidoItem.Id;
+    qry.ParamByName('IdPedido').AsInteger    := FPedidoItem.IdPedido;
+    qry.ParamByName('IdProduto').AsInteger   := FPedidoItem.IdProduto;
+    qry.ParamByName('Quantidade').AsFloat    := FPedidoItem.Quantidade;
+    qry.ParamByName('ValorUnitario').AsFloat := FPedidoItem.ValorUnitario;
+    qry.ParamByName('ValorTotal').AsFloat    := FPedidoItem.ValorTotal;
+
+    Try
+      qry.ExecSQL;
+    Except on E:Exception do
+      Begin
+        raise Exception.Create('Erro ao gravar itens do pedido: ' + e.Message);
+      End;
+    End;
+  Finally
+    FreeAndNil(qry);
+  End;
 end;
 
 function TModelPedidoItem.setObject(const AId: Integer): TModelPedidoItem;
