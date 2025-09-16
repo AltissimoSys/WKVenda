@@ -48,7 +48,7 @@ type
     function ValorTotal : Double; overload;
     function ValorTotal(AValue : Double) : TModelPedido; overload;
 
-    function PedidoItemController : TPedidoItemController;
+    function Item : TPedidoItemController;
 
     class function getSQL: String;
 
@@ -131,7 +131,7 @@ begin
   TFloatField(DataSet.FieldByName('ValorTotal')).DisplayFormat    := '####,##0.00';
 end;
 
-function TModelPedido.PedidoItemController: TPedidoItemController;
+function TModelPedido.Item: TPedidoItemController;
 begin
   Result := FPedidoItemController;
 end;

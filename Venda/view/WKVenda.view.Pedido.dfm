@@ -1,31 +1,31 @@
 inherited frmPedido: TfrmPedido
   Caption = 'Lan'#231'amento pedidos'
   ClientHeight = 675
-  ClientWidth = 1336
+  ClientWidth = 1188
   FormStyle = fsMDIChild
   Position = poDefault
   Visible = True
   WindowState = wsMaximized
   StyleElements = [seFont, seClient, seBorder]
   OnClose = FormClose
-  ExplicitWidth = 1352
+  ExplicitWidth = 1204
   ExplicitHeight = 714
   TextHeight = 15
   inherited Bevel3: TBevel
-    Width = 1332
+    Width = 1184
     Shape = bsSpacer
     Style = bsRaised
     ExplicitWidth = 1109
   end
   inherited pnlPrincipal: TPanel
-    Width = 1332
+    Width = 1184
     Height = 540
     StyleElements = [seFont, seClient, seBorder]
     ExplicitWidth = 1332
     ExplicitHeight = 540
     inherited pnlGrid: TPanel
       Left = 616
-      Width = 713
+      Width = 565
       Height = 534
       StyleElements = [seFont, seClient, seBorder]
       ExplicitLeft = 616
@@ -34,24 +34,29 @@ inherited frmPedido: TfrmPedido
       object Bevel1: TBevel [0]
         Left = 1
         Top = 138
-        Width = 711
+        Width = 563
         Height = 3
         Align = alTop
         Shape = bsSpacer
         Style = bsRaised
+        ExplicitWidth = 711
       end
       inherited dbgLista: TDBGrid
         Top = 141
-        Width = 711
+        Width = 563
         Height = 339
+        DrawingStyle = gdsGradient
         Font.Height = -19
         ParentFont = False
         TitleFont.Height = -19
+        StyleName = 'Windows'
         Columns = <
           item
+            Color = clWhite
             Expanded = False
             FieldName = 'IdProduto'
             Title.Caption = 'C'#243'digo Prod.'
+            Title.Color = clWhite
             Width = 120
             Visible = True
           end
@@ -86,10 +91,11 @@ inherited frmPedido: TfrmPedido
       object pnlBottomGrid: TPanel
         Left = 1
         Top = 480
-        Width = 711
+        Width = 563
         Height = 53
         Align = alBottom
         TabOrder = 1
+        ExplicitWidth = 711
         object pnlBtnIncItem: TPanel
           Left = 1
           Top = 1
@@ -156,7 +162,7 @@ inherited frmPedido: TfrmPedido
       object pnlTopItem: TPanel
         Left = 1
         Top = 1
-        Width = 711
+        Width = 563
         Height = 137
         Align = alTop
         BevelOuter = bvNone
@@ -174,6 +180,7 @@ inherited frmPedido: TfrmPedido
         ParentBackground = False
         ParentFont = False
         TabOrder = 2
+        ExplicitWidth = 711
         object Label11: TLabel
           Left = 104
           Top = 66
@@ -773,7 +780,7 @@ inherited frmPedido: TfrmPedido
     end
   end
   inherited pnlTop: TPanel
-    Width = 1332
+    Width = 1184
     StyleElements = [seFont, seClient, seBorder]
     ExplicitWidth = 1332
     inherited lblBusca: TLabel
@@ -785,7 +792,7 @@ inherited frmPedido: TfrmPedido
       StyleElements = [seFont, seClient, seBorder]
     end
     inherited edtGridBusca: TEdit
-      Width = 1326
+      Width = 1178
       Visible = False
       StyleElements = [seFont, seClient, seBorder]
       ExplicitWidth = 1326
@@ -793,14 +800,14 @@ inherited frmPedido: TfrmPedido
   end
   inherited pnlBottom: TPanel
     Top = 613
-    Width = 1332
+    Width = 1184
     Height = 60
     StyleElements = [seFont, seClient, seBorder]
     ExplicitTop = 613
     ExplicitWidth = 1332
     ExplicitHeight = 60
     inherited PnlBtnConfirma: TPanel
-      Left = 1220
+      Left = 1072
       Height = 52
       StyleElements = [seFont, seClient, seBorder]
       ExplicitLeft = 1220

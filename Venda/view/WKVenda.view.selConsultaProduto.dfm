@@ -7,6 +7,7 @@ inherited frmConsultaProduto: TfrmConsultaProduto
     inherited pnlGrid: TPanel
       StyleElements = [seFont, seClient, seBorder]
       inherited dbgLista: TDBGrid
+        OnDblClick = dbgListaDblClick
         Columns = <
           item
             Expanded = False

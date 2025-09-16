@@ -165,7 +165,8 @@ begin
       AppendLine('ON DUPLICATE KEY');
       AppendLine('UPDATE Quantidade = :Quantidade,');
       AppendLine('       ValorUnitario = :ValorUnitario,');
-      AppendLine('       ValorTotal = :ValorTotal');
+      AppendLine('       ValorTotal = :ValorTotal;');
+      AppendLine('SELECT LAST_INSERT_ID();');
     End;
     Result := str.ToString;
 
@@ -252,12 +253,16 @@ begin
     qry.ParamByName('ValorTotal').AsFloat    := FPedidoItem.ValorTotal;
 
     Try
-      qry.ExecSQL;
+      qry.Open;
     Except on E:Exception do
       Begin
         raise Exception.Create('Erro ao gravar itens do pedido: ' + e.Message);
       End;
     End;
+
+    var id := qry.Fields[0].Value;
+    setObject(id);
+
   Finally
     FreeAndNil(qry);
   End;
@@ -302,7 +307,7 @@ begin
     FPedidoItem.IdPedido      := AFields.FieldByName('IdPedido').AsInteger;
     FPedidoItem.IdProduto     := AFields.FieldByName('IdProduto').AsInteger;
     FPedidoItem.Quantidade    := AFields.FieldByName('Quantidade').AsFloat;
-    FPedidoItem.ValorUnitario := AFields.FieldByName('Quantidade').AsFloat;
+    FPedidoItem.ValorUnitario := AFields.FieldByName('ValorUnitario').AsFloat;
   Except
     FPedidoItem.IsLoaded := False;
   End;

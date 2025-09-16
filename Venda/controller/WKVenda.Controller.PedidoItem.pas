@@ -13,7 +13,7 @@ type
   public
     destructor Destroy; override;
     class function new(const AIdPedido : Integer) : TPedidoItemController;
-    function setObject(const AIdPedido : Integer) : TPedidoItemController;
+    function setObject(const AId : Integer) : TPedidoItemController;
 
     function Id : Integer; overload;
     function Id(AValue : Integer) : TPedidoItemController; overload;
@@ -132,10 +132,10 @@ begin
 end;
 
 function TPedidoItemController.setObject(
-  const AIdPedido: Integer): TPedidoItemController;
+  const AId: Integer): TPedidoItemController;
 begin
   Result := Self;
-  FModel.setObject(AIdPedido);
+  FModel.setObject(AId);
 end;
 
 function TPedidoItemController.ValorTotal(

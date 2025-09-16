@@ -15,6 +15,7 @@ uses
 type
   TfrmConsultaProduto = class(TfrmTemplateConsulta)
     procedure FormCreate(Sender: TObject);
+    procedure dbgListaDblClick(Sender: TObject);
   protected
     procedure Buscar; override;
 	procedure edtGridBuscaChange(Sender: TObject);
@@ -57,6 +58,12 @@ procedure TfrmConsultaProduto.criarController;
 begin
   if not Assigned(FController)then
     FController := TProdutoController.New.DataSource(dsGrid);
+end;
+
+procedure TfrmConsultaProduto.dbgListaDblClick(Sender: TObject);
+begin
+  inherited;
+  btnConfirmaClick(Sender);
 end;
 
 procedure TfrmConsultaProduto.edtGridBuscaChange(Sender: TObject);

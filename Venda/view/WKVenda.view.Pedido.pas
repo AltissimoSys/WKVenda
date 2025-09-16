@@ -93,12 +93,10 @@ type
     FClienteController : TClienteController;
     FPedidoController  : TPedidoController;
     FProdutoController : TProdutoController;
-    FPedidoItemController : TPedidoItemController;
 
     procedure criarClienteController;
     procedure criarPedidoController;
     procedure criarProdutoController;
-    procedure criarPedidoItemController;
     procedure pDsPedidoStateChange(Sender: TObject);
 
   public
@@ -206,7 +204,7 @@ begin
           .DataSource(dsPedido, dsGrid)
           .setObject(lcId)
           .Listar(Format(SQL_, [lcId.ToString]))
-          .PedidoItemController.DataSource(dsGrid);
+          .Item.DataSource(dsGrid);
 
       edtIdCliente.Text := FPedidoController.IdCliente.ToString;
       edtIdClienteExit(Sender);
@@ -243,11 +241,11 @@ begin
     FPedidoController := TPedidoController.New.DataSource(dsPedido, dsGrid) ;
 end;
 
-procedure TfrmPedido.criarPedidoItemController;
-begin
-  if not Assigned(FPedidoItemController) then
-    FPedidoItemController := TPedidoItemController.new(0);
-end;
+//procedure TfrmPedido.criarPedidoItemController;
+//begin
+//  if not Assigned(FPedidoItemController) then
+//    FPedidoItemController := TPedidoItemController.new(0);
+//end;
 
 procedure TfrmPedido.criarProdutoController;
 begin
@@ -294,8 +292,6 @@ end;
 procedure TfrmPedido.edtIdProdutoExit(Sender: TObject);
 begin
   inherited;
-  if(Trim(edtIdProduto.Text) = EmptyStr)then
-    Exit;
 
   FProdutoController
     .setObject(StrToIntDef(edtIdProduto.Text,0))
@@ -303,10 +299,16 @@ begin
 
   if not FProdutoController.IsLoaded then
   Begin
-    MessageDlg('Produto não encontrado!', mtWarning, [mbOk], 0);
+    if(edtIdProduto.Focused)then
+      MessageDlg('Produto não encontrado!', mtWarning, [mbOk], 0);
 
     if(edtIdProduto.CanFocus)then
       edtIdProduto.SetFocus;
+
+    edtDescricaoProd.Text := EmptyStr;
+    edtValorUnitario.Text := EmptyStr;
+    edtValorTotalItem.Text := EmptyStr;
+    edtQuantidade.Text := EmptyStr;;
 
     Exit;
   End;
@@ -330,7 +332,7 @@ begin
   criarClienteController;
   criarPedidoController;
   criarProdutoController;
-  criarPedidoItemController;
+  //criarPedidoItemController;
 end;
 
 procedure TfrmPedido.FormShow(Sender: TObject);
@@ -367,18 +369,28 @@ procedure TfrmPedido.btnAddItemClick(Sender: TObject);
 begin
   inherited;
 
-  FPedidoItemController
-    .Id(0).IdPedido(FPedidoController.Id)
+  FPedidoController
+  .Item
+    .Id(FPedidoController.Id)
+    .IdPedido(FPedidoController.Id)
     .IdProduto(StrToInt(edtIdProduto.Text))
     .Quantidade(StrToFloat(edtQuantidade.Text))
     .ValorUnitario(edtValorUnitario.floatValue)
     .ValorTotal(edtValorTotalItem.floatValue)
     .RecordObject;
 
-  FPedidoItemController
-    .DataSource(dsGrid)
-    .setObject(FPedidoController.Id)
-    .Listar(FPedidoController.Id);
+  FPedidoController
+    .Item
+      .DataSource(dsGrid)
+      .Listar(FPedidoController.Id);
+
+  edtIdProduto.Clear;
+  edtIdProdutoExit(Sender);
+
+  if(dbgLista.CanFocus)then
+    dbgLista.SetFocus;
+
+  pnlTopItem.Enabled := False;
 end;
 
 end.

@@ -138,7 +138,7 @@ begin
 
   FSQLWhereMontado := fnSQLWhereMontado;
 
-  if(Length(Trim(StrBusca)) >= 5)then
+  if(Length(Trim(StrBusca)) >= 5) or (VKEY = 13)then
   Begin
 
     TimerCharBusca.Enabled := False;

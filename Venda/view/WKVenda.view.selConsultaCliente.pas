@@ -14,6 +14,7 @@ uses
 type
   TfrmConsultaCliente = class(TfrmTemplateConsulta)
     procedure FormCreate(Sender: TObject);
+    procedure dbgListaDblClick(Sender: TObject);
   protected
     procedure Buscar; override;
     procedure TimerCharBuscaTimer(Sender: TObject);
@@ -57,6 +58,12 @@ begin
   if not Assigned(FController)then
     FController := TClienteController.New
                       .DataSource(dsGrid);
+end;
+
+procedure TfrmConsultaCliente.dbgListaDblClick(Sender: TObject);
+begin
+  inherited;
+  btnConfirmaClick(Sender);
 end;
 
 procedure TfrmConsultaCliente.edtGridBuscaChange(Sender: TObject);

@@ -27,7 +27,7 @@ type
     function ValorTotal : Double; overload;
     function ValorTotal(AValue : Double) : TPedidoController; overload;
 
-    function PedidoItemController : TPedidoItemController;
+    function Item : TPedidoItemController;
 
     function DataSource(AValue : TDataSource; AItem : TDataSource) : TPedidoController;
     function Listar(const AFiltro : String) : TPedidoController;
@@ -108,9 +108,9 @@ begin
   Result := Self.Create;
 end;
 
-function TPedidoController.PedidoItemController: TPedidoItemController;
+function TPedidoController.Item: TPedidoItemController;
 begin
-  Result := FModel.PedidoItemController;
+  Result := FModel.Item;
 end;
 
 function TPedidoController.RecordObject: TPedidoController;
