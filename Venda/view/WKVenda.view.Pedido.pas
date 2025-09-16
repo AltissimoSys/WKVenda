@@ -12,9 +12,10 @@ uses
   FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
   UDMConnection, WKVenda.Controller.Cliente, WKVenda.Controller.Pedido,
   WKVenda.view.selConsultaPedido, UITypes, WKVenda.view.selConsultaProduto,
-  WKVenda.Controller.Produto, WKVenda.Controller.PedidoItem;
+  WKVenda.Controller.Produto, WKVenda.Controller.PedidoItem, WKVenda.Helper;
 
 type
+
   TfrmPedido = class(TfrmTemplateConsulta)
     pnlDadosFundo: TPanel;
     pnlDados: TPanel;
@@ -70,8 +71,8 @@ type
     btnGravarCab: TSpeedButton;
     pnlBtnCancelarIncPed: TPanel;
     btnCancelarIncPed: TSpeedButton;
-    Panel2: TPanel;
-    SpeedButton2: TSpeedButton;
+    pnlBtnAddItem: TPanel;
+    btnAddItem: TSpeedButton;
     ImageList1: TImageList;
     procedure FormCreate(Sender: TObject);
     procedure edtIdClienteExit(Sender: TObject);
@@ -87,7 +88,7 @@ type
     procedure SpeedButton1Click(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnCancelarIncPedClick(Sender: TObject);
-    procedure SpeedButton2Click(Sender: TObject);
+    procedure btnAddItemClick(Sender: TObject);
   private
     FClienteController : TClienteController;
     FPedidoController  : TPedidoController;
@@ -98,6 +99,7 @@ type
     procedure criarPedidoController;
     procedure criarProdutoController;
     procedure criarPedidoItemController;
+    procedure pDsPedidoStateChange(Sender: TObject);
 
   public
 
@@ -171,6 +173,7 @@ begin
   pnlTopItem.Enabled := True;
   btnIncItem.Enabled := False;
   btnCancelarEditItem.Enabled := True;
+  btnAddItem.Enabled := True;
 
   edtIdProduto.SetFocus;
   btnSelProdutoClick(Sender);
@@ -243,7 +246,7 @@ end;
 procedure TfrmPedido.criarPedidoItemController;
 begin
   if not Assigned(FPedidoItemController) then
-    FPedidoItemController := TPedidoItemController.create;
+    FPedidoItemController := TPedidoItemController.new(0);
 end;
 
 procedure TfrmPedido.criarProdutoController;
@@ -337,17 +340,40 @@ begin
     edtIdCliente.SetFocus;
 end;
 
+procedure TfrmPedido.pDsPedidoStateChange(Sender: TObject);
+begin
+  if not (FPedidoController.IsLoaded)then
+  Begin
+    btnNovoPedido.Enabled := True;
+    btnGravarCab.Enabled := False;
+    btnCancelarIncPed.Enabled := False;
+  End
+  Else
+  Begin
+    btnNovoPedido.Enabled := False;
+    btnGravarCab.Enabled := True;
+    btnCancelarIncPed.Enabled := True;
+  End;
+
+end;
+
 procedure TfrmPedido.SpeedButton1Click(Sender: TObject);
 begin
   inherited;
   Close;
 end;
 
-procedure TfrmPedido.SpeedButton2Click(Sender: TObject);
+procedure TfrmPedido.btnAddItemClick(Sender: TObject);
 begin
   inherited;
 
-  //FPedidoItemController.re
+  FPedidoItemController
+    .Id(0).IdPedido(FPedidoController.Id)
+    .IdProduto(StrToInt(edtIdProduto.Text))
+    .Quantidade(StrToFloat(edtQuantidade.Text))
+    .ValorUnitario(edtValorUnitario.floatValue)
+    .ValorTotal(edtValorTotalItem.floatValue)
+    .RecordObject;
 
   FPedidoItemController
     .DataSource(dsGrid)

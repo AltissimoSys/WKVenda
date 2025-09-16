@@ -20,6 +20,7 @@ type
     procedure pCdsPedidosItemAfterPost(DataSet: TDataSet);
   strict private
     FPedidoItemController : TPedidoItemController;
+    FIsLoaded : Boolean;
 
     procedure setObject(AFields: TFields); overload;
     procedure criarCDS;
@@ -58,6 +59,8 @@ type
 
     class function getSQLInsUpd : String;
     function RecordObject : TModelPedido;
+
+    function IsLoaded : Boolean;
 
   end;
 
@@ -146,12 +149,17 @@ begin
     qry.ParamByName('ValorTotal' ).AsFloat    := FPedido.ValorTotal;
 
     Try
-      qry.ExecSQL;
+      qry.Open;
     Except on E:Exception do
       Begin
         raise Exception.Create('Erro ao gravar pedido: ' + e.Message);
       End;
     End;
+
+    var id := qry.Fields[0].Value;
+
+    setObject(id);
+
   Finally
     FreeAndNil(qry);
   End;
@@ -159,6 +167,7 @@ end;
 
 procedure TModelPedido.ClearObject;
 begin
+  FIsLoaded := False;
   FPedido.Id          := 0;
   FPedido.DataEmissao := 0;
   FPedido.IdCliente   := 0;
@@ -290,7 +299,8 @@ begin
       AppendLine('ON DUPLICATE KEY');
       AppendLine('UPDATE DataEmissao = :DataEmissao,');
       AppendLine('       IdCliente = :IdCliente,');
-      AppendLine('       ValorTotal = :ValorTotal');
+      AppendLine('       ValorTotal = :ValorTotal;');
+      AppendLine('SELECT LAST_INSERT_ID();');
     End;
     Result := str.ToString;
   Finally
@@ -308,6 +318,11 @@ function TModelPedido.IdCliente(AValue: Integer): TModelPedido;
 begin
   Result := Self;
   FPedido.IdCliente := AValue;
+end;
+
+function TModelPedido.IsLoaded: Boolean;
+begin
+  Result := FIsLoaded;
 end;
 
 function TModelPedido.Listar(const AIdCliente: Integer): TModelPedido;
@@ -356,6 +371,7 @@ begin
   FPedido.IdCliente   := AFields.FieldByName('IdCliente').AsInteger;
   FPedido.ValorTotal  := AFields.FieldByName('ValorTotal').AsFloat;
   FPedido.Itens := TModelPedidoItemLista.getLis(FPedido.Id);
+  FIsLoaded := True;
 end;
 
 function TModelPedido.setObject(const AId: Integer): TModelPedido;

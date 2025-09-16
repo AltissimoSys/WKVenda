@@ -10,7 +10,6 @@ type
   TModelPedidoItemLista = class
 
   strict private
-//    function criarCDS : TFDMemTable;
 
   private
 
@@ -25,19 +24,6 @@ type
 implementation
 
 { TModelPedidoItemLista }
-
-//function TModelPedidoItemLista.criarCDS : TFDMemTable ;
-//begin
-//
-//  var str : TStringBuilder;
-//  str := TStringBuilder.Create;
-//  str.Clear;
-//
-//  str.Append(getSQL);
-//  str.AppendLine('AND 1=0');
-//
-//  Result := WKVenda.Utils.CriarDataset(str.ToString);
-//end;
 
 class function TModelPedidoItemLista.getAll(AIdPedido: Integer): TFDMemTable;
   procedure Add(AFields : TFields);

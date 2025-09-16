@@ -35,6 +35,8 @@ type
 
     function DataSource(AValue : TDataSource) : TPedidoItemController;
     function Listar(const AIdPedido : Integer) : TPedidoItemController;
+
+    function RecordObject : TPedidoItemController;
   end;
 
 implementation
@@ -113,9 +115,20 @@ begin
   FModel.Quantidade(AValue);
 end;
 
+function TPedidoItemController.RecordObject: TPedidoItemController;
+begin
+  Try
+    FModel.RecordObject;
+  Except on E:Exception do
+    Begin
+      raise Exception.Create(e.Message);
+    End;
+  End;
+end;
+
 function TPedidoItemController.Quantidade: Double;
 begin
-
+  Result := FModel.Quantidade;
 end;
 
 function TPedidoItemController.setObject(

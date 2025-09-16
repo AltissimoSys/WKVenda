@@ -187,6 +187,7 @@
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="Venda\controller\WKVenda.Controller.PedidoItem.pas"/>
+        <DCCReference Include="lib\WKVenda.Helper.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

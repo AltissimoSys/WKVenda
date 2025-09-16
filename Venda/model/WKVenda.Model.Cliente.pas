@@ -45,7 +45,7 @@ type
     function DataSource(AValue: TDataSource): TModelCliente;
     function Listar(const AFiltro : String) : TModelCliente;
 
-    property IsLoaded: Boolean read FIsLoaded write FIsLoaded;
+    property IsLoaded: Boolean read FIsLoaded;
   end;
 
 var

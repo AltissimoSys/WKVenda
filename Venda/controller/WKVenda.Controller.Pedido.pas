@@ -33,6 +33,8 @@ type
     function Listar(const AFiltro : String) : TPedidoController;
 
     function RecordObject : TPedidoController;
+
+    function IsLoaded : Boolean;
   end;
 
 implementation
@@ -82,6 +84,11 @@ function TPedidoController.IdCliente(AValue: Integer): TPedidoController;
 begin
   Result := Self;
   FModel.IdCliente(AValue);
+end;
+
+function TPedidoController.IsLoaded: Boolean;
+begin
+  Result := FModel.IsLoaded;
 end;
 
 function TPedidoController.Id: Integer;

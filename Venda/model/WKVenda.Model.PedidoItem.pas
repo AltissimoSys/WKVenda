@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-  WKVenda.entity.PedidoItem, WKVenda.Utils, UDMConnection;
+  WKVenda.entity.PedidoItem, WKVenda.Utils, UDMConnection, WKVenda.entity.Pedido;
 
 type
   TModelPedidoItem = class(TDataModule)
@@ -20,6 +20,7 @@ type
   private
     FPedidoItem : TPedidoItem;
     FDataSource : TDataSource;
+    FParent : TPedido;
 
     constructor create(AOwner : TComponent; const APedido : Integer); reintroduce;
   public
@@ -79,8 +80,6 @@ end;
 
 constructor TModelPedidoItem.create(AOwner : TComponent; const APedido : Integer);
 begin
-  FPedidoItem := TPedidoItem.create;
-
   inherited Create(AOwner);
   FPedidoItem := TPedidoItem.Create;
   ClearObject;
@@ -163,8 +162,9 @@ begin
       AppendLine('             :ValorUnitario,');
       AppendLine('             :ValorTotal');
       AppendLine('            )');
-      AppendLine('ON DUPLICATE KEYUPDATE Quantidade = :Quantidade,');
-      AppendLine('       ValorUnitario = : ValorUnitario,');
+      AppendLine('ON DUPLICATE KEY');
+      AppendLine('UPDATE Quantidade = :Quantidade,');
+      AppendLine('       ValorUnitario = :ValorUnitario,');
       AppendLine('       ValorTotal = :ValorTotal');
     End;
     Result := str.ToString;
@@ -213,7 +213,7 @@ const
 begin
   Result := Self;
 
-    var strSQL : TStringBuilder;
+  var strSQL : TStringBuilder;
   Try
     strSQL := TStringBuilder.Create;
     strSQL.Append(getSQL);
@@ -238,6 +238,8 @@ end;
 
 function TModelPedidoItem.RecordObject: TModelPedidoItem;
 begin
+  Result := Self;
+
   var qry := TFDQuery.Create(Nil);
   Try
     qry.SQL.Text := getSQLInsUpd;
@@ -263,19 +265,20 @@ end;
 
 function TModelPedidoItem.setObject(const AId: Integer): TModelPedidoItem;
 const
-  SQL_ = 'AND Id = %d';
+  SQL_ = 'AND pdi.Id = %s';
 
 begin
+  Result := Self;
+
   var qry: TFDQuery;
   var str : TStringBuilder;
   Try
-    Result := Self;
 
     ClearObject;
 
     str := TStringBuilder.Create;
     str.Append(getSQL);
-    str.AppendLine(Format(SQL_, []));
+    str.AppendLine(Format(SQL_, [AId.ToString]));
 
     fillQuery(qry, str.ToString);
 

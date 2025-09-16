@@ -288,7 +288,7 @@ inherited frmPedido: TfrmPedido
           Height = 33
           TabOrder = 3
         end
-        object Panel2: TPanel
+        object pnlBtnAddItem: TPanel
           Left = 362
           Top = 88
           Width = 43
@@ -303,7 +303,7 @@ inherited frmPedido: TfrmPedido
           ParentBackground = False
           ParentFont = False
           TabOrder = 4
-          object SpeedButton2: TSpeedButton
+          object btnAddItem: TSpeedButton
             Left = 0
             Top = 0
             Width = 43
@@ -311,10 +311,9 @@ inherited frmPedido: TfrmPedido
             Align = alClient
             ImageIndex = 2
             Images = ImageList1
-            Enabled = False
             Flat = True
             Layout = blGlyphTop
-            OnClick = SpeedButton2Click
+            OnClick = btnAddItemClick
             ExplicitLeft = -24
             ExplicitTop = 21
             ExplicitHeight = 33
@@ -370,7 +369,6 @@ inherited frmPedido: TfrmPedido
               Padding.Bottom = 2
               ParentBackground = False
               TabOrder = 0
-              ExplicitTop = 2
               object Label5: TLabel
                 Left = 4
                 Top = 11
