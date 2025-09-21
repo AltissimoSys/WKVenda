@@ -21,15 +21,16 @@ inherited frmPedido: TfrmPedido
     Width = 1184
     Height = 540
     StyleElements = [seFont, seClient, seBorder]
-    ExplicitWidth = 1332
+    ExplicitWidth = 1184
     ExplicitHeight = 540
     inherited pnlGrid: TPanel
       Left = 616
       Width = 565
       Height = 534
+      Enabled = False
       StyleElements = [seFont, seClient, seBorder]
       ExplicitLeft = 616
-      ExplicitWidth = 713
+      ExplicitWidth = 565
       ExplicitHeight = 534
       object Bevel1: TBevel [0]
         Left = 1
@@ -44,12 +45,14 @@ inherited frmPedido: TfrmPedido
       inherited dbgLista: TDBGrid
         Top = 141
         Width = 563
-        Height = 339
+        Height = 298
         DrawingStyle = gdsGradient
         Font.Height = -19
         ParentFont = False
         TitleFont.Height = -19
         StyleName = 'Windows'
+        OnDblClick = dbgListaDblClick
+        OnKeyPress = dbgListaKeyPress
         Columns = <
           item
             Color = clWhite
@@ -62,7 +65,7 @@ inherited frmPedido: TfrmPedido
           end
           item
             Expanded = False
-            FieldName = 'ProdutoNome'
+            FieldName = 'ProdDescricao'
             Title.Caption = 'Produto'
             Width = 300
             Visible = True
@@ -88,14 +91,36 @@ inherited frmPedido: TfrmPedido
             Visible = True
           end>
       end
-      object pnlBottomGrid: TPanel
+      object pnlButtonGrid: TPanel
         Left = 1
         Top = 480
         Width = 563
         Height = 53
         Align = alBottom
         TabOrder = 1
-        ExplicitWidth = 711
+        object Bevel2: TBevel
+          Left = 105
+          Top = 1
+          Width = 3
+          Height = 51
+          Align = alLeft
+        end
+        object Bevel4: TBevel
+          Left = 213
+          Top = 1
+          Width = 3
+          Height = 51
+          Align = alLeft
+          ExplicitLeft = 174
+          ExplicitTop = 0
+        end
+        object Bevel5: TBevel
+          Left = 321
+          Top = 1
+          Width = 3
+          Height = 51
+          Align = alLeft
+        end
         object pnlBtnIncItem: TPanel
           Left = 1
           Top = 1
@@ -127,7 +152,7 @@ inherited frmPedido: TfrmPedido
           end
         end
         object pnlBtnCancelarEditItem: TPanel
-          Left = 105
+          Left = 108
           Top = 1
           Width = 105
           Height = 51
@@ -158,6 +183,68 @@ inherited frmPedido: TfrmPedido
             ExplicitHeight = 52
           end
         end
+        object pnlBtnExcluirItem: TPanel
+          Left = 324
+          Top = 1
+          Width = 105
+          Height = 51
+          Align = alLeft
+          BevelOuter = bvNone
+          Color = 4607988
+          ParentBackground = False
+          TabOrder = 2
+          object btnExcluirItem: TSpeedButton
+            Left = 0
+            Top = 0
+            Width = 105
+            Height = 51
+            Cursor = crHandPoint
+            Align = alClient
+            Caption = 'E&xcluir'
+            Enabled = False
+            Flat = True
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            ParentFont = False
+            OnClick = btnExcluirItemClick
+            ExplicitLeft = 3
+            ExplicitTop = -1
+          end
+        end
+        object pnlBtnEditarItem: TPanel
+          Left = 216
+          Top = 1
+          Width = 105
+          Height = 51
+          Align = alLeft
+          BevelOuter = bvNone
+          Color = 10085288
+          ParentBackground = False
+          TabOrder = 3
+          object btnEditarItem: TSpeedButton
+            Left = 0
+            Top = 0
+            Width = 105
+            Height = 51
+            Cursor = crHandPoint
+            Align = alClient
+            Caption = '&Editar'
+            Enabled = False
+            Flat = True
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            ParentFont = False
+            OnClick = btnEditarItemClick
+            ExplicitLeft = -3
+            ExplicitTop = -1
+          end
+        end
       end
       object pnlTopItem: TPanel
         Left = 1
@@ -180,7 +267,6 @@ inherited frmPedido: TfrmPedido
         ParentBackground = False
         ParentFont = False
         TabOrder = 2
-        ExplicitWidth = 711
         object Label11: TLabel
           Left = 104
           Top = 66
@@ -267,10 +353,12 @@ inherited frmPedido: TfrmPedido
             Top = 1
             Width = 366
             Height = 33
+            TabStop = False
             Align = alClient
             BevelInner = bvNone
             BevelOuter = bvNone
             BorderStyle = bsNone
+            ReadOnly = True
             TabOrder = 2
           end
         end
@@ -279,6 +367,7 @@ inherited frmPedido: TfrmPedido
           Top = 90
           Width = 82
           Height = 33
+          NumbersOnly = True
           TabOrder = 1
         end
         object edtValorUnitario: TEdit
@@ -286,13 +375,18 @@ inherited frmPedido: TfrmPedido
           Top = 90
           Width = 121
           Height = 33
+          NumbersOnly = True
           TabOrder = 2
+          OnExit = edtValorUnitarioExit
         end
         object edtValorTotalItem: TEdit
           Left = 231
           Top = 90
           Width = 121
           Height = 33
+          TabStop = False
+          NumbersOnly = True
+          ReadOnly = True
           TabOrder = 3
         end
         object pnlBtnAddItem: TPanel
@@ -321,10 +415,59 @@ inherited frmPedido: TfrmPedido
             Flat = True
             Layout = blGlyphTop
             OnClick = btnAddItemClick
-            ExplicitLeft = -24
-            ExplicitTop = 21
-            ExplicitHeight = 33
+            ExplicitLeft = -4
           end
+        end
+      end
+      object pnlBottomGrid: TPanel
+        Left = 1
+        Top = 439
+        Width = 563
+        Height = 41
+        Align = alBottom
+        BevelOuter = bvNone
+        Color = clWhite
+        ParentBackground = False
+        TabOrder = 3
+        object Label7: TLabel
+          Left = 16
+          Top = 6
+          Width = 55
+          Height = 15
+          Caption = 'Qtd. Total:'
+        end
+        object Label9: TLabel
+          Left = 176
+          Top = 6
+          Width = 49
+          Height = 15
+          Caption = 'Vlr. Total:'
+        end
+        object lblQtdTotalItem: TLabel
+          Left = 74
+          Top = 6
+          Width = 88
+          Height = 15
+          Caption = 'lblQtdTotalItem'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object lblVlrTotalItem: TLabel
+          Left = 228
+          Top = 6
+          Width = 83
+          Height = 15
+          Caption = 'lblVlrTotalItem'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          ParentFont = False
         end
       end
     end
@@ -402,19 +545,6 @@ inherited frmPedido: TfrmPedido
                 Font.Style = []
                 ParentFont = False
               end
-              object Label7: TLabel
-                Left = 397
-                Top = 13
-                Width = 75
-                Height = 21
-                Caption = 'Valor Total:'
-                Font.Charset = DEFAULT_CHARSET
-                Font.Color = clWindowText
-                Font.Height = -16
-                Font.Name = 'Segoe UI'
-                Font.Style = []
-                ParentFont = False
-              end
               object pnlEdtIdPedido: TPanel
                 Left = 4
                 Top = 40
@@ -447,38 +577,6 @@ inherited frmPedido: TfrmPedido
                   TabOrder = 0
                 end
               end
-              object Panel3: TPanel
-                Left = 396
-                Top = 40
-                Width = 127
-                Height = 35
-                BevelOuter = bvNone
-                Color = 12645002
-                Padding.Left = 1
-                Padding.Bottom = 2
-                ParentBackground = False
-                TabOrder = 1
-                object edtValorTotal: TDBEdit
-                  Left = 1
-                  Top = 0
-                  Width = 126
-                  Height = 33
-                  Align = alClient
-                  BevelInner = bvNone
-                  BevelOuter = bvNone
-                  BorderStyle = bsNone
-                  DataField = 'ValorTotal'
-                  DataSource = dsPedido
-                  Font.Charset = DEFAULT_CHARSET
-                  Font.Color = clWindowText
-                  Font.Height = -19
-                  Font.Name = 'Segoe UI'
-                  Font.Style = []
-                  ParentFont = False
-                  ReadOnly = True
-                  TabOrder = 0
-                end
-              end
               object Panel4: TPanel
                 Left = 180
                 Top = 40
@@ -489,7 +587,7 @@ inherited frmPedido: TfrmPedido
                 Padding.Left = 1
                 Padding.Bottom = 2
                 ParentBackground = False
-                TabOrder = 2
+                TabOrder = 1
                 object edtDataEmissao: TDBEdit
                   Left = 1
                   Top = 0
@@ -519,7 +617,7 @@ inherited frmPedido: TfrmPedido
                 BevelOuter = bvNone
                 Color = 10085288
                 ParentBackground = False
-                TabOrder = 3
+                TabOrder = 2
                 object btnPedido: TSpeedButton
                   Left = 0
                   Top = 0
@@ -560,7 +658,7 @@ inherited frmPedido: TfrmPedido
                 Padding.Bottom = 1
                 ParentBackground = False
                 ParentFont = False
-                TabOrder = 4
+                TabOrder = 3
                 object btnNovoPedido: TSpeedButton
                   Left = 1
                   Top = 1
@@ -596,7 +694,7 @@ inherited frmPedido: TfrmPedido
                 Font.Style = []
                 ParentBackground = False
                 ParentFont = False
-                TabOrder = 5
+                TabOrder = 4
                 object btnGravarCab: TSpeedButton
                   Left = 0
                   Top = 0
@@ -618,7 +716,7 @@ inherited frmPedido: TfrmPedido
                 BevelOuter = bvNone
                 Color = 11120122
                 ParentBackground = False
-                TabOrder = 6
+                TabOrder = 5
                 object btnCancelarIncPed: TSpeedButton
                   Left = 0
                   Top = 0
@@ -782,7 +880,7 @@ inherited frmPedido: TfrmPedido
   inherited pnlTop: TPanel
     Width = 1184
     StyleElements = [seFont, seClient, seBorder]
-    ExplicitWidth = 1332
+    ExplicitWidth = 1184
     inherited lblBusca: TLabel
       Visible = False
       StyleElements = [seFont, seClient, seBorder]
@@ -795,7 +893,7 @@ inherited frmPedido: TfrmPedido
       Width = 1178
       Visible = False
       StyleElements = [seFont, seClient, seBorder]
-      ExplicitWidth = 1326
+      ExplicitWidth = 1178
     end
   end
   inherited pnlBottom: TPanel
@@ -804,13 +902,13 @@ inherited frmPedido: TfrmPedido
     Height = 60
     StyleElements = [seFont, seClient, seBorder]
     ExplicitTop = 613
-    ExplicitWidth = 1332
+    ExplicitWidth = 1184
     ExplicitHeight = 60
     inherited PnlBtnConfirma: TPanel
       Left = 1072
       Height = 52
       StyleElements = [seFont, seClient, seBorder]
-      ExplicitLeft = 1220
+      ExplicitLeft = 1072
       ExplicitHeight = 52
       inherited btnConfirma: TSpeedButton
         Height = 52

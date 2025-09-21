@@ -25,6 +25,7 @@ type
     procedure setObject(AFields: TFields); overload;
     procedure criarCDS;
     procedure criarCDSItens;
+    procedure setDataSet(AFields : TFields);
   private
     FPedido : TPedido;
     FDataSource : TDataSource;
@@ -52,7 +53,7 @@ type
 
     class function getSQL: String;
 
-    function DataSource(AValue: TDataSource; AItem : TDataSource): TModelPedido;
+    function DataSource(AValue: TDataSource): TModelPedido;
 
     function Listar(const AFiltro : String) : TModelPedido; overload;
     function Listar(const AIdCliente : Integer) : TModelPedido; overload;
@@ -117,11 +118,12 @@ begin
 
     dts.Next;
   End;
-  }
 
-  {TFloatField(DataSet.FieldByName('ValorTotal')).DisplayFormat := '####,##0.00'; }
+
+  TFloatField(DataSet.FieldByName('ValorTotal')).DisplayFormat := '####,##0.00';
 
   FPedidoItemController.Listar(DataSet.FieldByName('Id').AsInteger);
+  }
 end;
 
 procedure TModelPedido.pCdsPedidosItemAfterPost(DataSet: TDataSet);
@@ -234,7 +236,7 @@ begin
   Result := FPedido.DataEmissao;
 end;
 
-function TModelPedido.DataSource(AValue: TDataSource; AItem : TDataSource): TModelPedido;
+function TModelPedido.DataSource(AValue: TDataSource): TModelPedido;
 begin
   Result := Self;
   AValue.DataSet := cdsPedidos;
@@ -259,13 +261,13 @@ begin
 
     with strSQL do
     Begin
-      AppendLine('select cli.Nome,');
-      AppendLine('	     cli.Cidade,');
-      AppendLine('       cli.UF,');
-      AppendLine('       ped.*');
-      AppendLine('FROM Pedido ped');
-      AppendLine('INNER JOIN Cliente cli');
-      AppendLine('	ON ped.IdCliente = cli.Id');
+      AppendLine('select Cliente.Nome,');
+      AppendLine('	     Cliente.Cidade,');
+      AppendLine('       Cliente.UF,');
+      AppendLine('       Pedido.*');
+      AppendLine('FROM Pedido');
+      AppendLine('INNER JOIN Cliente');
+      AppendLine('	ON Pedido.IdCliente = Cliente.Id');
       AppendLine('WHERE 1=1');
     End;
 
@@ -374,6 +376,15 @@ begin
   FIsLoaded := True;
 end;
 
+procedure TModelPedido.setDataSet(AFields: TFields);
+begin
+  cdsPedidos.Append;
+
+  for var i := 0 to AFields.Count-1 do
+    cdsPedidos.FieldByName(AFields[i].Fieldname).Value := AFields[i].Value;
+  cdsPedidos.Post;
+end;
+
 function TModelPedido.setObject(const AId: Integer): TModelPedido;
 begin
   var
@@ -382,15 +393,19 @@ begin
     Result := Self;
 
     ClearObject;
+    cdsPedidos.EmptyDataSet;
 
     qry := TFDQuery.Create(nil);
     qry.Connection := DMConnection.FDCon;
     qry.SQL.Text := getSQL;
-    qry.SQL.Add(Format('AND ped.Id = %d', [AId]));
+    qry.SQL.Add(Format('AND Pedido.Id = %d', [AId]));
     qry.Open;
 
     if not qry.isEmpty then
-      setObject(qry.Fields)
+    Begin
+      setObject(qry.Fields);
+      setDataSet(qry.Fields);
+    End;
 
   Finally
     FreeAndNil(qry);

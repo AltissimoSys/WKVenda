@@ -29,7 +29,7 @@ type
 
     function Item : TPedidoItemController;
 
-    function DataSource(AValue : TDataSource; AItem : TDataSource) : TPedidoController;
+    function DataSource(AValue : TDataSource) : TPedidoController;
     function Listar(const AFiltro : String) : TPedidoController;
 
     function RecordObject : TPedidoController;
@@ -57,10 +57,10 @@ begin
   FModel.DataEmissao(AValue);
 end;
 
-function TPedidoController.DataSource(AValue: TDataSource; AItem : TDataSource): TPedidoController;
+function TPedidoController.DataSource(AValue: TDataSource): TPedidoController;
 begin
   Result := Self;
-  FModel.DataSource(AValue, AItem);
+  FModel.DataSource(AValue);
 end;
 
 destructor TPedidoController.Destroy;

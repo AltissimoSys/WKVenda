@@ -29,37 +29,37 @@ inherited frmConsultaPedido: TfrmConsultaPedido
         Columns = <
           item
             Expanded = False
-            FieldName = 'Id'
+            FieldName = 'Pedido.Id'
             Title.Caption = 'C'#243'digo'
             Visible = True
           end
           item
             Expanded = False
-            FieldName = 'Nome'
+            FieldName = 'Cliente.Nome'
             Title.Caption = 'Cliente'
             Width = 200
             Visible = True
           end
           item
             Expanded = False
-            FieldName = 'Cidade'
+            FieldName = 'Cliente.Cidade'
             Width = 200
             Visible = True
           end
           item
             Expanded = False
-            FieldName = 'UF'
+            FieldName = 'Cliente.UF'
             Visible = True
           end
           item
             Expanded = False
-            FieldName = 'DataEmissao'
+            FieldName = 'Pedido.DataEmissao'
             Title.Caption = 'Emiss'#227'o'
             Visible = True
           end
           item
             Expanded = False
-            FieldName = 'ValorTotal'
+            FieldName = 'Pedido.ValorTotal'
             Title.Caption = '$ Total'
             Visible = True
           end>

@@ -6,21 +6,27 @@ uses
   System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-  WKVenda.entity.PedidoItem, WKVenda.Utils, UDMConnection, WKVenda.entity.Pedido;
+  WKVenda.entity.PedidoItem, WKVenda.Utils, UDMConnection, WKVenda.entity.Pedido,
+  WKVenda.Constants;
 
 type
   TModelPedidoItem = class(TDataModule)
     cdsPedidosItem: TFDMemTable;
+    procedure pCdsPedidosItemAfterPost(DataSet: TDataSet);
 
   strict private
     procedure criarCDS;
     procedure ClearObject;
     procedure setObject(AFields: TFields); overload;
+    procedure Totalizar;
 
   private
     FPedidoItem : TPedidoItem;
     FDataSource : TDataSource;
     FParent : TPedido;
+    FValorTotal : Double;
+    FQtdTotal : Double;
+    FfnTotalizador : TFnProcTwoDouble;
 
     constructor create(AOwner : TComponent; const APedido : Integer); reintroduce;
   public
@@ -54,6 +60,10 @@ type
 
     class function getSQLInsUpd : String;
     function RecordObject : TModelPedidoItem;
+    function Delete : TModelPedidoItem;
+
+    function fnTotalizador(AValue : TFnProcTwoDouble) : TModelPedidoItem;
+
   end;
 
 var
@@ -67,6 +77,13 @@ implementation
 
 { TModelPedidoItem }
 
+procedure TModelPedidoItem.pCdsPedidosItemAfterPost(DataSet: TDataSet);
+begin
+  TFloatField(DataSet.FieldByName('ValorTotal')).DisplayFormat := '####,##0.00';
+  TFloatField(DataSet.FieldByName('ValorUnitario')).DisplayFormat := '####,##0.00';
+  TFloatField(DataSet.FieldByName('Quantidade')).DisplayFormat := '####,##0.00';
+end;
+
 procedure TModelPedidoItem.ClearObject;
 begin
   FPedidoItem.IsLoaded      := False;
@@ -76,6 +93,7 @@ begin
   FPedidoItem.Quantidade    := 0;
   FPedidoItem.ValorUnitario := 0;
   FPedidoItem.ValorTotal    := 0;
+  FValorTotal := 0;
 end;
 
 constructor TModelPedidoItem.create(AOwner : TComponent; const APedido : Integer);
@@ -98,6 +116,8 @@ begin
 
     cdsPedidosItem := WKVenda.Utils.CriarDataset(str.ToString);
 
+    cdsPedidosItem.AfterPost := pCdsPedidosItemAfterPost;
+
   Finally
     FreeAndNil(str);
   End;
@@ -110,10 +130,34 @@ begin
   FDataSource := AValue;
 end;
 
+function TModelPedidoItem.Delete: TModelPedidoItem;
+const
+  SQL_ = 'DELETE from pedidoitens WHERE Id = %d';
+begin
+  Result := Self;
+
+  var IdItem := cdsPedidosItem.FieldByName('Id').AsInteger;
+
+  Try
+    DMConnection.FDCon.ExecSQL(Format(SQL_, [IdItem]));
+  Except on E:Exception do
+    Begin
+      raise Exception.Create(Format('Erro ao excluir item do pedido %s', [e.Message]));
+    End;
+  End;
+end;
+
 destructor TModelPedidoItem.destroy;
 begin
   FreeAndNil(FPedidoItem);
   inherited;
+end;
+
+function TModelPedidoItem.fnTotalizador(
+  AValue: TFnProcTwoDouble): TModelPedidoItem;
+begin
+  Result:= Self;
+  FfnTotalizador := AValue;
 end;
 
 class function TModelPedidoItem.getSQL: String;
@@ -125,7 +169,7 @@ begin
 
     with strSQL do
     Begin
-      AppendLine('select pr.Descricao AS ProdutoNome, pdi.*');
+      AppendLine('select pr.Descricao AS ProdDescricao, pdi.*');
       AppendLine('FROM pedidoitens pdi');
       AppendLine('INNER JOIN Produto pr');
       AppendLine('	ON pdi.IdProduto = pr.Id');
@@ -214,6 +258,8 @@ const
 begin
   Result := Self;
 
+  FValorTotal := 0;
+
   var strSQL : TStringBuilder;
   Try
     strSQL := TStringBuilder.Create;
@@ -221,6 +267,10 @@ begin
     strSQL.AppendLine(Format(WHERE_, [AIdPedido]));
 
     fillDataset(cdsPedidosItem, strSQL.ToString);
+
+    Totalizar;
+
+    FfnTotalizador(FQtdTotal, FValorTotal);
   Finally
     FreeAndNil(strSQL);
   End;
@@ -295,6 +345,29 @@ begin
   End;
 end;
 
+procedure TModelPedidoItem.Totalizar;
+begin
+  var bkm : TbookMark;
+
+  Try
+    FValorTotal := 0;
+    FQtdTotal := 0;
+    bkm := cdsPedidosItem.Bookmark;
+    cdsPedidosItem.DisableControls;
+    cdsPedidosItem.First;
+    while not cdsPedidosItem.Eof do
+    Begin
+      FValorTotal := (FValorTotal + cdsPedidosItem.FieldByName('ValorTotal').AsFloat);
+      FQtdTotal := FQtdTotal + cdsPedidosItem.FieldByName('Quantidade').AsFloat;
+      cdsPedidosItem.Next;
+    End;
+
+    cdsPedidosItem.Bookmark := bkm;
+  Finally
+    cdsPedidosItem.EnableControls;
+  End;
+end;
+
 function TModelPedidoItem.Quantidade: Double;
 begin
   Result := FPedidoItem.Quantidade;
@@ -308,6 +381,7 @@ begin
     FPedidoItem.IdProduto     := AFields.FieldByName('IdProduto').AsInteger;
     FPedidoItem.Quantidade    := AFields.FieldByName('Quantidade').AsFloat;
     FPedidoItem.ValorUnitario := AFields.FieldByName('ValorUnitario').AsFloat;
+    FPedidoItem.ValorTotal    := AFields.FieldByName('ValorTotal').AsFloat;
   Except
     FPedidoItem.IsLoaded := False;
   End;

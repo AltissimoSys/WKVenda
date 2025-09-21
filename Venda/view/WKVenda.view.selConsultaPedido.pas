@@ -56,7 +56,8 @@ begin
 
     strWHERE.AppendLine(Format(WHERE_, [ColFieldSel, QuotedStr(edtGridBusca.Text + '%')]));
     strWHERE.AppendLine(Format('ORDER BY %s', [OrderBy + ' ' + Direction])) ;
-    FController.DataSource(dsGrid, nil)
+
+    FController.DataSource(dsGrid)
                .Listar(strWHERE.ToString);
   Finally
     TimerCharBusca.Enabled := False;
@@ -70,7 +71,7 @@ const
 begin
   Self.create(AOwner);
   FIdCliente := AIdCliente;
-  FController.DataSource(dsGrid, NIL)
+  FController.DataSource(dsGrid)
              .Listar(Format(WHERE_CLI, [AIdCliente]));
 end;
 
@@ -84,7 +85,7 @@ procedure TfrmConsultaPedido.criarController;
 begin
   if not Assigned(FController) then
     FController := TPedidoController.New
-                      .DataSource(dsGrid, Nil);
+                      .DataSource(dsGrid);
 end;
 
 procedure TfrmConsultaPedido.dbgListaDblClick(Sender: TObject);

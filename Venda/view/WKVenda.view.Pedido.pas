@@ -19,7 +19,7 @@ type
   TfrmPedido = class(TfrmTemplateConsulta)
     pnlDadosFundo: TPanel;
     pnlDados: TPanel;
-    pnlBottomGrid: TPanel;
+    pnlButtonGrid: TPanel;
     pcCabPedido: TPageControl;
     tbsPedido: TTabSheet;
     pnlDadosTop: TPanel;
@@ -33,10 +33,8 @@ type
     pnlPedidoCab: TPanel;
     Label5: TLabel;
     pnlEdtIdPedido: TPanel;
-    Panel3: TPanel;
     Panel4: TPanel;
     Label6: TLabel;
-    Label7: TLabel;
     pnlBtnPedido: TPanel;
     btnPedido: TSpeedButton;
     edtNomeCliente: TDBEdit;
@@ -44,7 +42,6 @@ type
     EdtUF: TDBEdit;
     edtIdPedido: TDBEdit;
     edtDataEmissao: TDBEdit;
-    edtValorTotal: TDBEdit;
     dsCliente: TDataSource;
     dsPedido: TDataSource;
     pnlBtnIncItem: TPanel;
@@ -74,6 +71,18 @@ type
     pnlBtnAddItem: TPanel;
     btnAddItem: TSpeedButton;
     ImageList1: TImageList;
+    pnlBottomGrid: TPanel;
+    Label7: TLabel;
+    Label9: TLabel;
+    lblQtdTotalItem: TLabel;
+    lblVlrTotalItem: TLabel;
+    Bevel2: TBevel;
+    pnlBtnExcluirItem: TPanel;
+    btnExcluirItem: TSpeedButton;
+    Bevel4: TBevel;
+    pnlBtnEditarItem: TPanel;
+    btnEditarItem: TSpeedButton;
+    Bevel5: TBevel;
     procedure FormCreate(Sender: TObject);
     procedure edtIdClienteExit(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -89,15 +98,24 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnCancelarIncPedClick(Sender: TObject);
     procedure btnAddItemClick(Sender: TObject);
+    procedure edtValorUnitarioExit(Sender: TObject);
+    procedure btnExcluirItemClick(Sender: TObject);
+    procedure btnEditarItemClick(Sender: TObject);
+    procedure dbgListaDblClick(Sender: TObject);
+    procedure dbgListaKeyPress(Sender: TObject; var Key: Char);
   private
     FClienteController : TClienteController;
     FPedidoController  : TPedidoController;
     FProdutoController : TProdutoController;
+    FIdItem : Integer;
 
     procedure criarClienteController;
     procedure criarPedidoController;
     procedure criarProdutoController;
     procedure pDsPedidoStateChange(Sender: TObject);
+    procedure limparInclusaoItem;
+    procedure SetTotal(AQtdToal, AValorTotal : Double);
+    procedure pEdtQtdValorItemChange(Sender: TObject);
 
   public
 
@@ -117,6 +135,8 @@ begin
   inherited;
   btnIncItem.Enabled := True;
   btnCancelarEditItem.Enabled := False;
+
+  limparInclusaoItem;
 end;
 
 procedure TfrmPedido.btnCancelarIncPedClick(Sender: TObject);
@@ -134,6 +154,31 @@ begin
 
   edtIdCliente.Clear;
   pnlEdtCliente.Enabled := False;
+end;
+
+procedure TfrmPedido.btnExcluirItemClick(Sender: TObject);
+const
+  MSG_CONF = 'Deseja realmente excluir o Item %s?';
+begin
+  inherited;
+
+  if(dbgLista.DataSource.DataSet.Active)then
+  Begin
+    if(dbgLista.DataSource.DataSet.IsEmpty)then
+      Exit;
+
+    var sDesc := dbgLista.DataSource.DataSet.FieldByName('ProdDescricao').AsString;
+    if(MessageDlg(Format(MSG_CONF, [sDesc]), mtConfirmation, [mbYes, mbNo], 0) = mrYes)then
+    Begin
+      FPedidoController.Item.Delete;
+
+      FPedidoController
+      .Item
+        .DataSource(dsGrid)
+        .fnTotalizador(SetTotal)
+        .Listar(FPedidoController.Id);
+    End;
+  End;
 end;
 
 procedure TfrmPedido.btnGravarCabClick(Sender: TObject);
@@ -155,6 +200,7 @@ begin
       btnNovoPedido.Enabled := True;
       btnGravarCab.Enabled := False;
       btnCancelarIncPed.Enabled := False;
+      pnlGrid.Enabled := True;
     End;
   End
   Else
@@ -168,10 +214,14 @@ end;
 procedure TfrmPedido.btnIncItemClick(Sender: TObject);
 begin
   inherited;
+  FIdItem := 0;
   pnlTopItem.Enabled := True;
   btnIncItem.Enabled := False;
   btnCancelarEditItem.Enabled := True;
   btnAddItem.Enabled := True;
+  btnExcluirItem.Enabled := False;
+  edtIdProduto.Enabled := True;
+  dbgLista.Enabled := False;
 
   edtIdProduto.SetFocus;
   btnSelProdutoClick(Sender);
@@ -180,6 +230,7 @@ end;
 procedure TfrmPedido.btnNovoPedidoClick(Sender: TObject);
 begin
   inherited;
+  pnlDadosTop.Enabled := True;
   pnlEdtCliente.Enabled := True;
   edtIdCliente.SetFocus;
   btnNovoPedido.Enabled := False;
@@ -200,8 +251,9 @@ begin
     if(frmConsultaPedido.ShowModal = mrOk)then
     Begin
       lcId := frmConsultaPedido.dsGrid.DataSet.FieldByName('Id').AsInteger;
+
       FPedidoController
-          .DataSource(dsPedido, dsGrid)
+          .DataSource(dsPedido)
           .setObject(lcId)
           .Listar(Format(SQL_, [lcId.ToString]))
           .Item.DataSource(dsGrid);
@@ -222,11 +274,22 @@ begin
     Begin
       edtIdProduto.Text := frmConsultaProduto.dsGrid.DataSet.FieldByName('Id').AsString;
       edtIdProdutoExit(Sender);
+
+      edtQuantidade.SetFocus;
     End;
 
   Finally
     FreeAndNil(frmConsultaProduto);
   End;
+end;
+
+procedure TfrmPedido.limparInclusaoItem;
+begin
+  edtIdProduto.Clear;
+  edtIdProdutoExit(edtIdProduto);
+  btnCancelarEditItem.Enabled := False;
+  btnIncItem.Enabled := True;
+  dbgLista.Enabled := True;
 end;
 
 procedure TfrmPedido.criarClienteController;
@@ -238,7 +301,7 @@ end;
 procedure TfrmPedido.criarPedidoController;
 begin
   if not Assigned(FPedidoController) then
-    FPedidoController := TPedidoController.New.DataSource(dsPedido, dsGrid) ;
+    FPedidoController := TPedidoController.New.DataSource(dsPedido) ;
 end;
 
 //procedure TfrmPedido.criarPedidoItemController;
@@ -251,6 +314,19 @@ procedure TfrmPedido.criarProdutoController;
 begin
   if not Assigned(FProdutoController) then
     FProdutoController := TProdutoController.New;
+end;
+
+procedure TfrmPedido.dbgListaDblClick(Sender: TObject);
+begin
+  inherited;
+  btnEditarItemClick(Sender);
+end;
+
+procedure TfrmPedido.dbgListaKeyPress(Sender: TObject; var Key: Char);
+begin
+  inherited;
+  if(VKEY = 13)then
+    btnEditarItemClick(Sender);
 end;
 
 procedure TfrmPedido.edtIdClienteChange(Sender: TObject);
@@ -287,11 +363,17 @@ begin
   btnGravarCab.Enabled := True;
   pnlBtnPedido.Visible := False;
   btnIncItem.Enabled := True;
+  pnlDadosTop.Enabled := False;
+
+  btnGravarCabClick(Sender);
 end;
 
 procedure TfrmPedido.edtIdProdutoExit(Sender: TObject);
 begin
   inherited;
+
+  if(FProdutoController.Id.ToString = Trim(edtIdProduto.Text))then
+    Exit;
 
   FProdutoController
     .setObject(StrToIntDef(edtIdProduto.Text,0))
@@ -319,6 +401,13 @@ begin
   edtQuantidade.Text := '1';
 end;
 
+procedure TfrmPedido.edtValorUnitarioExit(Sender: TObject);
+begin
+  inherited;
+  if(VKEY = 13)then
+    btnAddItemClick(Sender);
+end;
+
 procedure TfrmPedido.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   inherited;
@@ -332,7 +421,10 @@ begin
   criarClienteController;
   criarPedidoController;
   criarProdutoController;
-  //criarPedidoItemController;
+  FIdItem := 0;
+
+  edtQuantidade.OnChange := pEdtQtdValorItemChange;
+  edtValorUnitario.OnChange := pEdtQtdValorItemChange;
 end;
 
 procedure TfrmPedido.FormShow(Sender: TObject);
@@ -340,6 +432,9 @@ begin
   inherited;
   if(edtIdCliente.CanFocus)then
     edtIdCliente.SetFocus;
+
+  lblQtdTotalItem.Caption := FormatFloat('##,##0.0', 0);
+  lblVlrTotalItem.Caption := FormatFloat('##,##0.0', 0);
 end;
 
 procedure TfrmPedido.pDsPedidoStateChange(Sender: TObject);
@@ -359,19 +454,57 @@ begin
 
 end;
 
+procedure TfrmPedido.pEdtQtdValorItemChange(Sender: TObject);
+begin
+  edtValorTotalItem.Text := FormatFloat('####,##0.00', edtQuantidade.floatValue * edtValorUnitario.floatValue);
+end;
+
+procedure TfrmPedido.SetTotal(AQtdToal, AValorTotal: Double);
+begin
+  lblQtdTotalItem.Caption := FormatFloat('##,##0.0', AQtdToal);
+  lblVlrTotalItem.Caption := FormatFloat('##,##0.0', AValorTotal);
+end;
+
 procedure TfrmPedido.SpeedButton1Click(Sender: TObject);
 begin
   inherited;
   Close;
 end;
 
+procedure TfrmPedido.btnEditarItemClick(Sender: TObject);
+begin
+  inherited;
+
+  if(dbgLista.DataSource.DataSet.IsEmpty)then
+    Exit;
+
+  FIdItem := dbgLista.DataSource.DataSet.FieldByName('Id').AsInteger;
+
+  //var Id := dbgLista.DataSource.DataSet.FieldByName('Id').AsInteger;
+  FPedidoController.Item.setObject(FIdItem);
+
+  edtIdProduto.Enabled := False;
+  edtIdProduto.Text := FPedidoController.Item.IdProduto.ToString;
+  edtIdProdutoExit(Sender);
+  pnlTopItem.Enabled := True;
+  dbgLista.Enabled := False;
+
+  edtQuantidade.SetFocus;
+
+  edtQuantidade.Text := FormatFloat('####,##0.00', FPedidoController.Item.Quantidade);
+  edtValorUnitario.Text := FormatFloat('####,##0.00', FPedidoController.Item.ValorUnitario);
+  edtValorTotalItem.Text := FormatFloat('####,##0.00', FPedidoController.Item.ValorTotal);
+end;
+
 procedure TfrmPedido.btnAddItemClick(Sender: TObject);
 begin
   inherited;
 
+  pnlBtnAddItem.SetFocus;
+
   FPedidoController
   .Item
-    .Id(FPedidoController.Id)
+    .Id(FIdItem)
     .IdPedido(FPedidoController.Id)
     .IdProduto(StrToInt(edtIdProduto.Text))
     .Quantidade(StrToFloat(edtQuantidade.Text))
@@ -382,15 +515,17 @@ begin
   FPedidoController
     .Item
       .DataSource(dsGrid)
+      .fnTotalizador(SetTotal)
       .Listar(FPedidoController.Id);
 
-  edtIdProduto.Clear;
-  edtIdProdutoExit(Sender);
-
-  if(dbgLista.CanFocus)then
-    dbgLista.SetFocus;
+  limparInclusaoItem;
 
   pnlTopItem.Enabled := False;
+  btnExcluirItem.Enabled := True;
+  btnEditarItem.Enabled := True;
+
+  if(pnlBtnIncItem.CanFocus)then
+    pnlBtnIncItem.SetFocus;
 end;
 
 end.

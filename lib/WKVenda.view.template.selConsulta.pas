@@ -40,7 +40,6 @@ type
     procedure TimerCharBuscaTimer(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
-    VKEY : word;
 
   protected
     FGridZebrado : Boolean;
@@ -50,6 +49,7 @@ type
     FDirection   : String;
     FStrBusca    : String;
     FSQLWhereMontado  : String;
+    VKEY : word;
 
     function fnSQLWhereMontado: String;
     procedure Buscar; virtual; abstract;
@@ -172,14 +172,12 @@ begin
 
   if(Key = VK_F4) AND (ssAlt in Shift)then
     Key := 0;
-
 end;
 
 procedure TfrmTemplateConsulta.FormKeyPress(Sender: TObject; var Key: Char);
 begin
   if(VKEY = 13)then
     Perform(WM_NEXTDLGCTL, 0, 0);
-
 end;
 
 procedure TfrmTemplateConsulta.FormKeyUp(Sender: TObject; var Key: Word;

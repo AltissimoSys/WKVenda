@@ -188,6 +188,7 @@
         </DCCReference>
         <DCCReference Include="Venda\controller\WKVenda.Controller.PedidoItem.pas"/>
         <DCCReference Include="lib\WKVenda.Helper.pas"/>
+        <DCCReference Include="lib\WKVenda.Constants.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

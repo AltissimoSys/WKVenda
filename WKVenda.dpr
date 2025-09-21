@@ -27,7 +27,8 @@ uses
   WKVenda.view.selConsultaPedido in 'Venda\view\WKVenda.view.selConsultaPedido.pas' {frmConsultaPedido},
   WKVenda.Model.PedidoItem in 'Venda\model\WKVenda.Model.PedidoItem.pas' {ModelPedidoItem: TDataModule},
   WKVenda.Controller.PedidoItem in 'Venda\controller\WKVenda.Controller.PedidoItem.pas',
-  WKVenda.Helper in 'lib\WKVenda.Helper.pas';
+  WKVenda.Helper in 'lib\WKVenda.Helper.pas',
+  WKVenda.Constants in 'lib\WKVenda.Constants.pas';
 
 {$R *.res}
 

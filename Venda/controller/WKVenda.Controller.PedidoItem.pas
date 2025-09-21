@@ -2,7 +2,7 @@ unit WKVenda.Controller.PedidoItem;
 
 interface
 
-uses DB, WKVenda.Model.PedidoItem, SysUtils;
+uses DB, WKVenda.Model.PedidoItem, SysUtils, WKVenda.Constants;
 
 type
 
@@ -37,6 +37,10 @@ type
     function Listar(const AIdPedido : Integer) : TPedidoItemController;
 
     function RecordObject : TPedidoItemController;
+
+    function Delete : TPedidoItemController;
+
+    function fnTotalizador(AValue : TFnProcTwoDouble) : TPedidoItemController;
   end;
 
 implementation
@@ -55,10 +59,23 @@ begin
   FModel.DataSource(AValue);
 end;
 
+function TPedidoItemController.Delete: TPedidoItemController;
+begin
+  Result := Self;
+  FModel.Delete;
+end;
+
 destructor TPedidoItemController.destroy;
 begin
   FreeAndNil(FModel);
   inherited;
+end;
+
+function TPedidoItemController.fnTotalizador(
+  AValue: TFnProcTwoDouble): TPedidoItemController;
+begin
+  Result := Self;
+  FModel.fnTotalizador(AValue);
 end;
 
 function TPedidoItemController.Id(AValue: Integer): TPedidoItemController;
