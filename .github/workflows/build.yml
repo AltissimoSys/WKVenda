@@ -1,0 +1,23 @@
+name: Build
+
+on:
+  push:
+    branches:
+master
+develop
+'feature/**'
+'bugfix/**'
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+uses: actions/checkout@v3
+
+name: compile-project
+        shell: powershell
+        run: .\compilador.bat
+
+name: execute-test
+        shell: powershell        
+        run: D:\Desenvolvimento\Projetos\WKVenda\Win32\Debug\WKVenda.exe
