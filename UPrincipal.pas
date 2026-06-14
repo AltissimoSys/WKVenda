@@ -71,6 +71,7 @@ begin
     Screen.Cursor := crHourGlass;
     if not Assigned(frmPedido) then
       //Application.CreateForm(TfrmPedido, frmPedido);
+
       frmPedido := TfrmPedido.Create(Self);
 
     frmPedido.Show;

@@ -561,6 +561,7 @@ inherited frmPedido: TfrmPedido
                   Top = 0
                   Width = 126
                   Height = 33
+                  Margins.Left = 50
                   Align = alClient
                   BevelInner = bvNone
                   BevelOuter = bvNone
@@ -833,13 +834,17 @@ inherited frmPedido: TfrmPedido
               end
             end
             object edtNomeCliente: TDBEdit
-              Left = 114
-              Top = 1
-              Width = 366
-              Height = 33
+              AlignWithMargins = True
+              Left = 119
+              Top = 2
+              Width = 356
+              Height = 31
+              Margins.Left = 5
+              Margins.Top = 1
+              Margins.Right = 5
+              Margins.Bottom = 1
               Align = alClient
-              BevelInner = bvNone
-              BevelOuter = bvNone
+              BevelKind = bkSoft
               BorderStyle = bsNone
               DataField = 'Nome'
               DataSource = dsCliente
@@ -851,6 +856,7 @@ inherited frmPedido: TfrmPedido
               ParentFont = False
               ReadOnly = True
               TabOrder = 2
+              ExplicitLeft = 122
             end
           end
           object edtCidade: TDBEdit

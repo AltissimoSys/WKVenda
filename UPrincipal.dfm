@@ -2,7 +2,7 @@ object frmPrincipal: TfrmPrincipal
   Left = 0
   Top = 0
   Caption = 'Sistema WKTech - Vendas'
-  ClientHeight = 446
+  ClientHeight = 456
   ClientWidth = 624
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
@@ -364,7 +364,7 @@ object frmPrincipal: TfrmPrincipal
   end
   object StatusBar1: TStatusBar
     Left = 5
-    Top = 422
+    Top = 432
     Width = 614
     Height = 19
     Panels = <>
