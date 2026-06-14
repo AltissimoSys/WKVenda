@@ -1,6 +1,7 @@
 { Teste CI
   Teste CI 2
   Teste CI 3
+  Teste CI 4
 }
 
 unit UPrincipal;
