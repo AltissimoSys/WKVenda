@@ -5,6 +5,7 @@
   Teste CI 4
   Teste CI 5
   Teste CI 6
+  Teste CI 7
 }
 
 unit UPrincipal;
